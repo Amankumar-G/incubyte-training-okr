@@ -1,6 +1,8 @@
-import type { keyResult } from '../types/OkrFormTypes.ts';
+import { useKeyResult } from '../context/KeyResultContext.tsx';
 
-const KeyResultList = ({ keyResultList }: { keyResultList: keyResult[] }) => {
+const KeyResultList = () => {
+  const { keyResultList } = useKeyResult();
+
   return (
     <div className="flex flex-col mb-4 mt-4">
       <h1 className="mb-2">
