@@ -1,10 +1,9 @@
-import type { KeyResult } from '../types/okr_types'
+import { useContext } from 'react'
+import { KeyResultContext } from '../provider/KeyResultProvider'
 
-type KeyResultListProps = {
-    keyResultList: KeyResult[]
-}
-
-const KeyResultList = ({ keyResultList }: KeyResultListProps) => {
+const KeyResultList = () => {
+    const {keyResultList} = useContext(KeyResultContext);
+    
     return (
         <div>
             {keyResultList.length > 0 && keyResultList.map((item, index) => (

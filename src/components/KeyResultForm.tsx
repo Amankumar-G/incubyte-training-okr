@@ -1,12 +1,9 @@
-import React, { useState } from 'react'
+import { useContext, useState } from 'react'
 import type { KeyResult } from '../types/okr_types';
+import { KeyResultContext } from '../provider/KeyResultProvider';
 
-type KeyResultFormProps = {
-    keyResultList: KeyResult[],
-    setKeyResultList: React.Dispatch<React.SetStateAction<KeyResult[]>>
-}
-
-const KeyResultForm = ({ keyResultList, setKeyResultList }: KeyResultFormProps) => {
+const KeyResultForm = () => {
+    const {keyResultList, setKeyResultList} = useContext(KeyResultContext);
     const [keyResult, setKeyResult] = useState<KeyResult>({
         description: '',
         progress: '',

@@ -1,17 +1,17 @@
 import { useState } from 'react';
-import { type KeyResult } from './types/okr_types.ts';
 import KeyResultList from './components/KeyResultList.tsx';
 import KeyResultForm from './components/KeyResultForm.tsx';
+import KeyResultProvider from './provider/KeyResultProvider.tsx';
 
 export function OkrForm() {
   const [objective, setObjective] = useState<string>('');
-  const [keyResultList, setKeyResultList] = useState<KeyResult[]>([]);
 
   const handleOnFormSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
   };
 
   return (
+    <KeyResultProvider>
     <div className="flex flex-col gap-4 p-4 items-center h-screen pt-20 bg-white">
       <form onSubmit={(e) => handleOnFormSubmit(e)} autoComplete="off">
         <div className="  p-7 bg-white border border-gray-300 rounded-lg mb-4 shadow-lg w-96">
@@ -33,10 +33,7 @@ export function OkrForm() {
             />
           </div>
 
-          <KeyResultForm
-            keyResultList={keyResultList}
-            setKeyResultList={setKeyResultList}
-          />
+          <KeyResultForm />
 
           <div className="flex flex-row gap-4 justify-between mt-4">
             <button
@@ -52,10 +49,11 @@ export function OkrForm() {
               Clear
             </button>
           </div>
-          <KeyResultList keyResultList={keyResultList} />
+          <KeyResultList />
         </div>
       </form>
     </div>
+    </KeyResultProvider>
   );
 }
 
