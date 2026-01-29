@@ -1,15 +1,11 @@
-import React, { createContext, useState } from "react";
+import React, {useState } from "react";
 import type { KeyResult } from "../types/okr_types";
+import { KeyResultContext } from "./KeyResultContext";
 
-type KeyResultContextType = {
+export type KeyResultContextType = {
     keyResultList: KeyResult[],
-    setKeyResultList: React.Dispatch<React.SetStateAction<KeyResult[]>>
+    validateKeyResultList: (keyResult: KeyResult) => void
 }
-
-export const KeyResultContext = createContext<KeyResultContextType>({
-    keyResultList: [],
-    setKeyResultList: () => { }
-});
 
 type KeyResultProviderProps = {
     children: React.ReactNode
@@ -17,9 +13,17 @@ type KeyResultProviderProps = {
 
 const KeyResultProvider = ({ children }: KeyResultProviderProps) => {
     const [keyResultList, setKeyResultList] = useState<KeyResult[]>([]);
+    const validateKeyResultList = (keyResult: KeyResult) => {
+        if (keyResult.description === '' || keyResult.progress === '') {
+            alert("Key Result fields cannot be empty");
+        }
+        setKeyResultList([...keyResultList, keyResult]);
+    };
 
     return (
-        <KeyResultContext.Provider value={{ keyResultList, setKeyResultList }} children={children} />
+        <KeyResultContext.Provider value={{ keyResultList, validateKeyResultList }} >
+            {children}
+        </KeyResultContext.Provider>
     )
 }
 

@@ -1,9 +1,9 @@
 import { useContext } from 'react'
-import { KeyResultContext } from '../provider/KeyResultProvider'
+import { KeyResultContext } from '../provider/KeyResultContext'
 
 const KeyResultList = () => {
     const {keyResultList} = useContext(KeyResultContext);
-    
+
     return (
         <div>
             {keyResultList.length > 0 && keyResultList.map((item, index) => (
