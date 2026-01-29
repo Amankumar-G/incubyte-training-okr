@@ -10,7 +10,7 @@ const KeyResultForm = () => {
     });
 
     function addKeyResult() {
-        // if(keyResult.description != '' && keyResult.progress != '')
+        if(keyResult.description != '' && keyResult.progress != '')
         validateKeyResultList(keyResult);
         setKeyResult({ description: '', progress: '' });
     }

@@ -13,11 +13,16 @@ type KeyResultProviderProps = {
 
 const KeyResultProvider = ({ children }: KeyResultProviderProps) => {
     const [keyResultList, setKeyResultList] = useState<KeyResult[]>([]);
+    ;
+
     const validateKeyResultList = (keyResult: KeyResult) => {
-        if (keyResult.description === '' || keyResult.progress === '') {
+        const isValidProgress = /^\d+%?$/.test(keyResult.progress)
+        if (isValidProgress === false) {
             alert("Key Result fields cannot be empty");
         }
-        setKeyResultList([...keyResultList, keyResult]);
+        else{
+            setKeyResultList([...keyResultList, keyResult]);
+        }
     };
 
     return (
