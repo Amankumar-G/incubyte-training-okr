@@ -1,0 +1,184 @@
+{
+  "okrs": [
+    {
+      "id": "okr-1",
+      "objective": "Improve product stability",
+      "keyResults": [
+        {
+          "id": "kr-1-1",
+          "isCompleted": false,
+          "description": "Reduce production bugs by 30%",
+          "progress": 60
+        },
+        {
+          "id": "kr-1-2",
+          "isCompleted": true,
+          "description": "Increase unit test coverage to 85%",
+          "progress": 100
+        }
+      ]
+    },
+    {
+      "id": "okr-2",
+      "objective": "Increase user engagement",
+      "keyResults": [
+        {
+          "id": "kr-2-1",
+          "isCompleted": false,
+          "description": "Improve daily active users by 20%",
+          "progress": 40
+        },
+        {
+          "id": "kr-2-2",
+          "isCompleted": false,
+          "description": "Reduce app bounce rate",
+          "progress": 55
+        }
+      ]
+    },
+    {
+      "id": "okr-3",
+      "objective": "Enhance onboarding experience",
+      "keyResults": [
+        {
+          "id": "kr-3-1",
+          "isCompleted": true,
+          "description": "Complete onboarding redesign",
+          "progress": 100
+        },
+        {
+          "id": "kr-3-2",
+          "isCompleted": false,
+          "description": "Increase onboarding completion rate",
+          "progress": 70
+        }
+      ]
+    },
+    {
+      "id": "okr-4",
+      "objective": "Improve application performance",
+      "keyResults": [
+        {
+          "id": "kr-4-1",
+          "isCompleted": false,
+          "description": "Reduce page load time below 2 seconds",
+          "progress": 65
+        },
+        {
+          "id": "kr-4-2",
+          "isCompleted": false,
+          "description": "Optimize API response time",
+          "progress": 50
+        }
+      ]
+    },
+    {
+      "id": "okr-5",
+      "objective": "Strengthen security posture",
+      "keyResults": [
+        {
+          "id": "kr-5-1",
+          "isCompleted": true,
+          "description": "Resolve all high severity vulnerabilities",
+          "progress": 100
+        },
+        {
+          "id": "kr-5-2",
+          "isCompleted": false,
+          "description": "Enable 2FA for all users",
+          "progress": 80
+        }
+      ]
+    },
+    {
+      "id": "okr-6",
+      "objective": "Expand market reach",
+      "keyResults": [
+        {
+          "id": "kr-6-1",
+          "isCompleted": false,
+          "description": "Launch product in two new regions",
+          "progress": 45
+        },
+        {
+          "id": "kr-6-2",
+          "isCompleted": false,
+          "description": "Increase international signups",
+          "progress": 35
+        }
+      ]
+    },
+    {
+      "id": "okr-7",
+      "objective": "Improve customer satisfaction",
+      "keyResults": [
+        {
+          "id": "kr-7-1",
+          "isCompleted": true,
+          "description": "Achieve CSAT score above 90%",
+          "progress": 100
+        },
+        {
+          "id": "kr-7-2",
+          "isCompleted": false,
+          "description": "Reduce average support response time",
+          "progress": 75
+        }
+      ]
+    },
+    {
+      "id": "okr-8",
+      "objective": "Increase revenue growth",
+      "keyResults": [
+        {
+          "id": "kr-8-1",
+          "isCompleted": false,
+          "description": "Increase monthly recurring revenue by 25%",
+          "progress": 50
+        },
+        {
+          "id": "kr-8-2",
+          "isCompleted": false,
+          "description": "Upsell premium plans to existing users",
+          "progress": 60
+        }
+      ]
+    },
+    {
+      "id": "okr-9",
+      "objective": "Improve internal development process",
+      "keyResults": [
+        {
+          "id": "kr-9-1",
+          "isCompleted": true,
+          "description": "Adopt CI/CD pipeline across teams",
+          "progress": 100
+        },
+        {
+          "id": "kr-9-2",
+          "isCompleted": false,
+          "description": "Reduce deployment failures",
+          "progress": 70
+        }
+      ]
+    },
+    {
+      "id": "okr-10",
+      "objective": "Enhance team productivity",
+      "keyResults": [
+        {
+          "id": "kr-10-1",
+          "isCompleted": false,
+          "description": "Reduce sprint spillover by 20%",
+          "progress": 55
+        },
+        {
+          "id": "kr-10-2",
+          "isCompleted": false,
+          "description": "Improve sprint planning accuracy",
+          "progress": 65
+        }
+      ]
+    }
+  ]
+}

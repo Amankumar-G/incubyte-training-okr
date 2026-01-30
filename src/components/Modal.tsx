@@ -1,6 +1,6 @@
-import { type ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 
-interface ModalProps {
+interface ModalProps extends React.HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
   isOpen: boolean;
   onClose: () => void;
@@ -8,11 +8,21 @@ interface ModalProps {
   description?: string;
 }
 
-const Modal = ({ children, isOpen, onClose, title = "", description = "" }: ModalProps) => {
+const Modal = ({
+  children,
+  isOpen,
+  onClose,
+  title = '',
+  description = '',
+  ...props
+}: ModalProps) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-200 bg-opacity-50 flex items-center justify-center z-50">
+    <div
+      className={`fixed inset-0 bg-gray-200 bg-opacity-50 flex items-center justify-center z-50 `}
+      {...props}
+    >
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl overflow-hidden">
         <div className="bg-linear-to-r from-blue-500 to-blue-600 px-8 py-8 relative">
           <h1 className="text-3xl font-bold text-white mb-2">{title}</h1>

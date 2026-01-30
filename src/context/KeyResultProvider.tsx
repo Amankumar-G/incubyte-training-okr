@@ -4,7 +4,7 @@ import { KeyResultContext } from './KeyResultContext.tsx';
 
 interface KeyResultProviderProps {
   readonly children: ReactNode;
- }
+}
 
 function KeyResultProvider({ children }: KeyResultProviderProps) {
   const [keyResultList, setKeyResultList] = useState<keyResult[]>([]);
