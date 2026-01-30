@@ -3,12 +3,14 @@ import type { keyResult } from '../types/OkrFormTypes.ts';
 
 type keyResultContextType = {
   keyResultList: keyResult[];
-  setKeyResultList: (keyResultList: keyResult[]) => void;
+  addKeyResult: (keyResult: keyResult) => void;
+  clearKeyResults: () => void;
 };
 
 export const KeyResultContext = createContext<keyResultContextType>({
   keyResultList: [],
-  setKeyResultList: () => {},
+  addKeyResult: () => {},
+  clearKeyResults: () => {},
 });
 
 export const useKeyResult = () => useContext(KeyResultContext);
