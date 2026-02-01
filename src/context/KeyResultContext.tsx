@@ -1,16 +1,18 @@
 import { createContext, useContext } from 'react';
-import type { keyResult } from '../types/OkrFormTypes.ts';
+import type { keyResult, keyResultFormType } from '../types/OkrFormTypes.ts';
 
 type keyResultContextType = {
   keyResultList: keyResult[];
-  addKeyResult: (keyResult: keyResult) => void;
+  addKeyResult: (keyResult: keyResultFormType) => void;
   clearKeyResults: () => void;
+  removeKeyResult: (id: string) => void;
 };
 
 export const KeyResultContext = createContext<keyResultContextType>({
   keyResultList: [],
   addKeyResult: () => {},
   clearKeyResults: () => {},
+  removeKeyResult() {}
 });
 
 export const useKeyResult = () => useContext(KeyResultContext);

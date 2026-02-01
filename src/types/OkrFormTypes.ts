@@ -5,6 +5,8 @@ export type keyResult = {
   progress: number;
 };
 
+export type keyResultFormType = Omit<keyResult, 'id'| 'isCompleted'>
+
 export type OkrType = {
   id: string;
   objective: string;

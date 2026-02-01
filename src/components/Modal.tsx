@@ -20,13 +20,13 @@ const Modal = ({
 
   return (
     <div
-      className={`fixed inset-0 bg-gray-200 bg-opacity-50 flex items-center justify-center z-50 `}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
       {...props}
     >
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl overflow-hidden">
-        <div className="bg-linear-to-r from-blue-500 to-blue-600 px-8 py-8 relative">
-          <h1 className="text-3xl font-bold text-white mb-2">{title}</h1>
-          <p className="text-blue-100 text-sm">{description}</p>
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
+        <div className="bg-linear-to-r from-blue-500 to-blue-600 px-8 py-5 relative shrink-0">
+          <h1 className="text-2xl font-bold text-white mb-2">{title}</h1>
+          <p className="text-blue-100 text-xs">{description}</p>
           <button
             onClick={onClose}
             className="absolute top-4 right-4 text-white hover:text-gray-200 focus:outline-none"
@@ -48,7 +48,7 @@ const Modal = ({
           </button>
         </div>
 
-        {children}
+        <div className="overflow-y-auto flex-1">{children}</div>
       </div>
     </div>
   );

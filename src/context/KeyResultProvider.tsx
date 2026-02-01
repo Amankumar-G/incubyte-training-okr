@@ -1,5 +1,5 @@
 import { type ReactNode, useState } from 'react';
-import type { keyResult } from '../types/OkrFormTypes.ts';
+import type { keyResult, keyResultFormType } from '../types/OkrFormTypes.ts';
 import { KeyResultContext } from './KeyResultContext.tsx';
 
 interface KeyResultProviderProps {
@@ -9,20 +9,31 @@ interface KeyResultProviderProps {
 function KeyResultProvider({ children }: KeyResultProviderProps) {
   const [keyResultList, setKeyResultList] = useState<keyResult[]>([]);
 
-  const addKeyResult = (keyResult: keyResult) => {
+  const addKeyResult = (keyResult: keyResultFormType) => {
     if (keyResult.description.trim() === '') {
       alert('Please add a description for the key result.');
       return;
     }
-    setKeyResultList([...keyResultList, keyResult]);
+    setKeyResultList([
+      ...keyResultList,
+      {
+        id: Date.now().toString(),
+        isCompleted: false,
+        ...keyResult,
+      },
+    ]);
   };
 
   const clearKeyResults = () => {
     setKeyResultList([]);
   };
 
+  const removeKeyResult = (id: string) => {
+    setKeyResultList(keyResultList.filter(kr => kr.id !== id));
+  }
+
   return (
-    <KeyResultContext value={{ keyResultList, addKeyResult, clearKeyResults }}>
+    <KeyResultContext value={{ keyResultList, addKeyResult, clearKeyResults,removeKeyResult }}>
       {children}
     </KeyResultContext>
   );
