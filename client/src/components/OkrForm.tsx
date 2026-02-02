@@ -8,12 +8,14 @@ interface OkrFormProps {
   initialOkr: OkrType | null;
   isEditing: boolean;
   onSubmitSuccess: () => void;
+  onRefreshOkrs: () => void;
 }
 
 export default function OkrForm({
   initialOkr,
   isEditing,
   onSubmitSuccess,
+  onRefreshOkrs,
 }: Readonly<OkrFormProps>) {
   const [objective, setObjective] = useState<string>(initialOkr?.objective || '');
   const { keyResultList, clearKeyResults, setKeyResults } = useKeyResult();
@@ -48,6 +50,7 @@ export default function OkrForm({
 
       setObjective('');
       clearKeyResults();
+      onRefreshOkrs();
       onSubmitSuccess();
     } catch (error) {
       console.error('Error submitting OKR data:', error);

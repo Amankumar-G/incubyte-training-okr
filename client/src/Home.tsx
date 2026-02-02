@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { OkrType, keyResult } from './types/OkrFormTypes.ts';
+import type { keyResult, OkrType } from './types/OkrFormTypes.ts';
 import Modal from './components/Modal.tsx';
 import OkrForm from './components/OkrForm.tsx';
 import OkrList from './components/OkrList.tsx';
@@ -11,10 +11,12 @@ const Home = () => {
 
   const [isOkrFormModalOpen, setIsOkrFormModalOpen] = useState(false);
 
+  const fetchAllOkrs = async () => {
+    const response = await fetch(`http://localhost:3000/okrs`);
+    return await response.json();
+  }
   useEffect(() => {
-    fetch('http://localhost:3000/okrs')
-      .then((res) => res.json())
-      .then((data) => setOkrs(data));
+    fetchAllOkrs().then((data : OkrType[]) => setOkrs(data));
   }, []);
 
   const openCreateOkrModal = () => {
@@ -39,21 +41,24 @@ const Home = () => {
     await fetch(`http://localhost:3000/okrs/${okrId}`, {
       method: 'DELETE',
     });
-
-    setOkrs((prev) => prev.filter((okr) => okr.id !== okrId));
+    fetchAllOkrs().then((data: OkrType[]) => setOkrs(data));
   };
 
-  const updateKeyResult = (okrId: string, updatedKr: keyResult) => {
-    setOkrs((prev) =>
-      prev.map((okr) =>
-        okr.id === okrId
-          ? {
-              ...okr,
-              keyResults: okr.keyResults.map((kr) => (kr.id === updatedKr.id ? updatedKr : kr)),
-            }
-          : okr
-      )
-    );
+  const updateKeyResult = async (okrId: string, updatedKr: keyResult) => {
+    await fetch(`http://localhost:3000/okrs/${okrId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ...okrs.find((o) => o.id === okrId),
+        keyResults: okrs
+          .find((o) => o.id === okrId)
+          ?.keyResults.map((kr) => (kr.id === updatedKr.id ? updatedKr : kr)),
+      }),
+    });
+
+    fetchAllOkrs().then((data: OkrType[]) => setOkrs(data));
   };
 
   return (
@@ -98,6 +103,9 @@ const Home = () => {
             initialOkr={activeOkrForEdit}
             isEditing={Boolean(activeOkrForEdit)}
             onSubmitSuccess={closeOkrFormModal}
+            onRefreshOkrs={() => {
+              fetchAllOkrs().then((data: OkrType[]) => setOkrs(data));
+            }}
           />
         </KeyResultProvider>
       </Modal>
