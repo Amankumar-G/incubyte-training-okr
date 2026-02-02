@@ -36,7 +36,7 @@ function KeyResultForm() {
           id="description"
           name="description"
           className="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-xs text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-          placeholder="Key Result 1 (e.g. Achieve 10,000 active users)"
+          placeholder="Key Result"
           value={keyResult.description}
           onChange={handleDescriptionChange}
         />
@@ -45,11 +45,19 @@ function KeyResultForm() {
       <div className="flex flex-col gap-2">
         <div className="flex justify-between items-center">
           <label htmlFor="progress" className="text-xs font-semibold text-gray-700">
-            Progress
+            Progress in %
           </label>
-          <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
-            {keyResult.progress}%
-          </span>
+          <input
+            type="number"
+            id="progress-number"
+            name="progress-number"
+            min={0}
+            max={100}
+            value={keyResult.progress}
+            onChange={handleProgressChange}
+            className="border border-gray-300 rounded-lg px-3 py-1.5 text-xs text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            placeholder="Progress (0-100)%"
+          />
         </div>
         <input
           type="range"

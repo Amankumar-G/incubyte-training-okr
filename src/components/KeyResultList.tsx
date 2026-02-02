@@ -32,7 +32,7 @@ const KeyResultList = () => {
                 <button
                   type="button"
                   className="text-xs text-red-500 hover:underline"
-                  onClick={()=>removeKeyResult(kr.id)}
+                  onClick={() => removeKeyResult(kr.id)}
                 >
                   &#128465;
                 </button>

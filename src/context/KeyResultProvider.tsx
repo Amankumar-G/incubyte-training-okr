@@ -1,4 +1,4 @@
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useCallback, useMemo, useState } from 'react';
 import type { keyResult, keyResultFormType } from '../types/OkrFormTypes.ts';
 import { KeyResultContext } from './KeyResultContext.tsx';
 
@@ -9,34 +9,43 @@ interface KeyResultProviderProps {
 function KeyResultProvider({ children }: KeyResultProviderProps) {
   const [keyResultList, setKeyResultList] = useState<keyResult[]>([]);
 
-  const addKeyResult = (keyResult: keyResultFormType) => {
-    if (keyResult.description.trim() === '') {
-      alert('Please add a description for the key result.');
-      return;
-    }
-    setKeyResultList([
-      ...keyResultList,
+  const addKeyResult = useCallback((keyResult: keyResultFormType) => {
+    if (!keyResult.description.trim()) return;
+
+    setKeyResultList((prev) => [
+      ...prev,
       {
-        id: Date.now().toString(),
+        id: crypto.randomUUID(),
         isCompleted: false,
         ...keyResult,
       },
     ]);
-  };
+  }, []);
 
-  const clearKeyResults = () => {
+  const clearKeyResults = useCallback(() => {
     setKeyResultList([]);
-  };
+  }, []);
 
-  const removeKeyResult = (id: string) => {
-    setKeyResultList(keyResultList.filter(kr => kr.id !== id));
-  }
+  const removeKeyResult = useCallback((id: string) => {
+    setKeyResultList((prev) => prev.filter((kr) => kr.id !== id));
+  }, []);
 
-  return (
-    <KeyResultContext value={{ keyResultList, addKeyResult, clearKeyResults,removeKeyResult }}>
-      {children}
-    </KeyResultContext>
+  const setKeyResults = useCallback((keyResults: keyResult[]) => {
+    setKeyResultList(keyResults);
+  }, []);
+
+  const value = useMemo(
+    () => ({
+      keyResultList,
+      addKeyResult,
+      clearKeyResults,
+      removeKeyResult,
+      setKeyResults,
+    }),
+    [keyResultList, addKeyResult, clearKeyResults, removeKeyResult, setKeyResults]
   );
+
+  return <KeyResultContext.Provider value={value}>{children}</KeyResultContext.Provider>;
 }
 
 export default KeyResultProvider;

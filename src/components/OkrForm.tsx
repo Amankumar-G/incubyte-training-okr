@@ -1,41 +1,67 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import KeyResultForm from './KeyResultForm.tsx';
 import KeyResultList from './KeyResultList.tsx';
 import { useKeyResult } from '../context/KeyResultContext.tsx';
+import type { OkrType } from '../types/OkrFormTypes.ts';
 
-function OkrForm() {
-  const [objective, setObjective] = useState<string>('');
-  const { keyResultList, clearKeyResults } = useKeyResult();
+interface OkrFormProps {
+  initialOkr: OkrType | null;
+  isEditing: boolean;
+  onSubmitSuccess: () => void;
+}
+
+export default function OkrForm({
+  initialOkr,
+  isEditing,
+  onSubmitSuccess,
+}: Readonly<OkrFormProps>) {
+  const [objective, setObjective] = useState<string>(initialOkr?.objective || '');
+  const { keyResultList, clearKeyResults, setKeyResults } = useKeyResult();
+
+  useEffect(() => {
+    if (initialOkr?.keyResults) {
+      setKeyResults(initialOkr.keyResults);
+    }
+  }, [initialOkr, setKeyResults]);
 
   const handleOnFormSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try{
+    try {
       const okrData = {
         objective,
         keyResults: keyResultList,
       };
 
-      await fetch('http://localhost:3000/okrs', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(okrData),
-      });
+      if (isEditing && initialOkr) {
+        await fetch(`http://localhost:3000/okrs/${initialOkr.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(okrData),
+        });
+      } else {
+        await fetch('http://localhost:3000/okrs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(okrData),
+        });
+      }
 
       setObjective('');
       clearKeyResults();
-
-    }catch(error){
-      console.error('Error submitting OKR data:',error);
+      onSubmitSuccess();
+    } catch (error) {
+      console.error('Error submitting OKR data:', error);
       alert('There was an error saving your Objective and Key Results. Please try again.');
     }
-
-    e.currentTarget.reset();
   };
 
   return (
-    <form onSubmit={(e) => handleOnFormSubmit(e)} autoComplete="off" className="flex flex-col h-full p-6">
+    <form
+      onSubmit={(e) => handleOnFormSubmit(e)}
+      autoComplete="off"
+      className="flex flex-col h-full p-6"
+    >
       <div className="flex gap-6 flex-1 overflow-hidden">
-
         <div className="flex-[50%] overflow-y-auto pr-3">
           <div className="mb-6 mx-2">
             <div className="flex items-center gap-2 mb-2">
@@ -49,7 +75,7 @@ function OkrForm() {
               value={objective}
               onChange={(e) => setObjective(e.target.value)}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-xs text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all wrap-break-word"
-              placeholder="e.g., Launch the new mobile app by Q3"
+              placeholder="Enter your objective here"
               required={true}
             />
           </div>
@@ -93,11 +119,9 @@ function OkrForm() {
           className="px-4 py-2 text-xs bg-blue-600 text-white rounded-lg font-semibold cursor-pointer hover:bg-blue-700 transition-all duration-300 active:scale-95 shadow-md"
           type="submit"
         >
-          Save Objective
+          {isEditing ? 'Edit Objective' : 'Save Objective'}
         </button>
       </div>
     </form>
   );
 }
-
-export default OkrForm;
