@@ -1,0 +1,30 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Objective {
+  id         String      @id @default(uuid())
+  objective  String
+  keyResults KeyResult[]
+}
+
+model KeyResult {
+  id           String    @id @default(uuid())
+  description  String
+  is_completed Boolean   @default(false)
+  progress     Int       @default(0)
+  objectiveId  String
+  objective    Objective @relation(fields: [objectiveId], references: [id])
+}
