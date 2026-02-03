@@ -1,0 +1,116 @@
+import { useEffect, useState } from 'react';
+import type { keyResult, OkrType } from './types/OkrFormTypes.ts';
+import Modal from './components/Modal.tsx';
+import OkrForm from './components/OkrForm.tsx';
+import OkrList from './components/OkrList.tsx';
+import KeyResultProvider from './context/KeyResultProvider.tsx';
+
+const Home = () => {
+  const [okrs, setOkrs] = useState<OkrType[]>([]);
+  const [activeOkrForEdit, setActiveOkrForEdit] = useState<OkrType | null>(null);
+
+  const [isOkrFormModalOpen, setIsOkrFormModalOpen] = useState(false);
+
+  const fetchAllOkrs = async () => {
+    const response = await fetch(`http://localhost:3000/okrs`);
+    return await response.json();
+  }
+  useEffect(() => {
+    fetchAllOkrs().then((data : OkrType[]) => setOkrs(data));
+  }, []);
+
+  const openCreateOkrModal = () => {
+    setActiveOkrForEdit(null);
+    setIsOkrFormModalOpen(true);
+  };
+
+  const openEditOkrModal = (okrId: string) => {
+    const okr = okrs.find((o) => o.id === okrId);
+    if (okr) {
+      setActiveOkrForEdit(okr);
+      setIsOkrFormModalOpen(true);
+    }
+  };
+
+  const closeOkrFormModal = () => {
+    setIsOkrFormModalOpen(false);
+    setActiveOkrForEdit(null);
+  };
+
+  const deleteOkr = async (okrId: string) => {
+    await fetch(`http://localhost:3000/okrs/${okrId}`, {
+      method: 'DELETE',
+    });
+    fetchAllOkrs().then((data: OkrType[]) => setOkrs(data));
+  };
+
+  const updateKeyResult = async (okrId: string, updatedKr: keyResult) => {
+    await fetch(`http://localhost:3000/okrs/${okrId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ...okrs.find((o) => o.id === okrId),
+        keyResults: okrs
+          .find((o) => o.id === okrId)
+          ?.keyResults.map((kr) => (kr.id === updatedKr.id ? updatedKr : kr)),
+      }),
+    });
+
+    fetchAllOkrs().then((data: OkrType[]) => setOkrs(data));
+  };
+
+  return (
+    <div className="min-h-screen bg-linear-to-b from-gray-50 to-gray-100 flex flex-col">
+      <header className="bg-white border-b border-gray-200 shadow-sm">
+        <div className="px-6 py-4 max-w-5xl mx-auto flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">
+              Objective & Key Results (OKR) Tracker
+            </h1>
+            <p className="text-xs text-gray-600 mt-0.5">Track and achieve your objectives</p>
+          </div>
+
+          <button
+            onClick={openCreateOkrModal}
+            className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all shadow-md"
+          >
+            + New OKR
+          </button>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="flex-1">
+        <OkrList
+          okrs={okrs}
+          onEditOkr={openEditOkrModal}
+          onDeleteOkr={deleteOkr}
+          onUpdateKeyResult={updateKeyResult}
+        />
+      </main>
+
+      <Modal
+        isOpen={isOkrFormModalOpen}
+        onClose={closeOkrFormModal}
+        title={activeOkrForEdit ? 'Edit OKR' : 'Create New OKR'}
+        description="Define your objective and key results"
+        size="lg"
+      >
+        <KeyResultProvider>
+          <OkrForm
+            initialOkr={activeOkrForEdit}
+            isEditing={Boolean(activeOkrForEdit)}
+            onSubmitSuccess={closeOkrFormModal}
+            onRefreshOkrs={() => {
+              fetchAllOkrs().then((data: OkrType[]) => setOkrs(data));
+            }}
+          />
+        </KeyResultProvider>
+      </Modal>
+    </div>
+  );
+};
+
+export default Home;

@@ -1,0 +1,213 @@
+{
+  "okrs": [
+    {
+      "objective": "Increase user",
+      "keyResults": [
+        {
+          "id": "kr-2-1",
+          "isCompleted": false,
+          "description": "Improve daily active users by 20%",
+          "progress": 40
+        }
+      ],
+      "id": "okr-2"
+    },
+    {
+      "id": "okr-3",
+      "objective": "Enhance onboarding experience",
+      "keyResults": [
+        {
+          "id": "kr-3-1",
+          "isCompleted": true,
+          "description": "Complete onboarding redesign",
+          "progress": 100
+        },
+        {
+          "id": "kr-3-2",
+          "isCompleted": false,
+          "description": "Increase onboarding completion rate",
+          "progress": 70
+        }
+      ]
+    },
+    {
+      "id": "okr-4",
+      "objective": "Improve application performance",
+      "keyResults": [
+        {
+          "id": "kr-4-1",
+          "isCompleted": false,
+          "description": "Reduce page load time below 2 seconds",
+          "progress": 65
+        },
+        {
+          "id": "kr-4-2",
+          "isCompleted": false,
+          "description": "Optimize API response time",
+          "progress": 50
+        }
+      ]
+    },
+    {
+      "id": "okr-5",
+      "objective": "Strengthen security posture",
+      "keyResults": [
+        {
+          "id": "kr-5-1",
+          "isCompleted": true,
+          "description": "Resolve all high severity vulnerabilities",
+          "progress": 100
+        },
+        {
+          "id": "kr-5-2",
+          "isCompleted": false,
+          "description": "Enable 2FA for all users",
+          "progress": 80
+        }
+      ]
+    },
+    {
+      "id": "okr-6",
+      "objective": "Expand market reach",
+      "keyResults": [
+        {
+          "id": "kr-6-1",
+          "isCompleted": false,
+          "description": "Launch product in two new regions",
+          "progress": 45
+        },
+        {
+          "id": "kr-6-2",
+          "isCompleted": false,
+          "description": "Increase international signups",
+          "progress": 35
+        }
+      ]
+    },
+    {
+      "id": "okr-7",
+      "objective": "Improve customer satisfaction",
+      "keyResults": [
+        {
+          "id": "kr-7-1",
+          "isCompleted": true,
+          "description": "Achieve CSAT score above 90%",
+          "progress": 100
+        },
+        {
+          "id": "kr-7-2",
+          "isCompleted": false,
+          "description": "Reduce average support response time",
+          "progress": 75
+        }
+      ]
+    },
+    {
+      "id": "okr-8",
+      "objective": "Increase revenue growth",
+      "keyResults": [
+        {
+          "id": "kr-8-1",
+          "isCompleted": false,
+          "description": "Increase monthly recurring revenue by 25%",
+          "progress": 50
+        },
+        {
+          "id": "kr-8-2",
+          "isCompleted": false,
+          "description": "Upsell premium plans to existing users",
+          "progress": 60
+        }
+      ]
+    },
+    {
+      "id": "okr-9",
+      "objective": "Improve internal development process",
+      "keyResults": [
+        {
+          "id": "kr-9-1",
+          "isCompleted": true,
+          "description": "Adopt CI/CD pipeline across teams",
+          "progress": 100
+        },
+        {
+          "id": "kr-9-2",
+          "isCompleted": false,
+          "description": "Reduce deployment failures",
+          "progress": 70
+        }
+      ]
+    },
+    {
+      "id": "okr-10",
+      "objective": "Enhance team productivity",
+      "keyResults": [
+        {
+          "id": "kr-10-1",
+          "isCompleted": false,
+          "description": "Reduce sprint spillover by 20%",
+          "progress": 55
+        },
+        {
+          "id": "kr-10-2",
+          "isCompleted": false,
+          "description": "Improve sprint planning accuracy",
+          "progress": 65
+        }
+      ]
+    },
+    {
+      "id": "bd7a",
+      "objective": "Demo",
+      "keyResults": [
+        {
+          "id": "1769932569831",
+          "isCompleted": false,
+          "description": "demo",
+          "progress": 21
+        }
+      ]
+    },
+    {
+      "id": "312b",
+      "objective": "Demo",
+      "keyResults": [
+        {
+          "id": "1769932600928",
+          "isCompleted": false,
+          "description": "demo",
+          "progress": 90
+        }
+      ]
+    },
+    {
+      "id": "90af",
+      "objective": "Demo",
+      "keyResults": [
+        {
+          "id": "45cbc4f3-5fab-416f-989a-86581c78d7d3",
+          "isCompleted": false,
+          "description": "Demo",
+          "progress": 20
+        }
+      ]
+    },
+    {
+      "id": "2a10",
+      "objective": "Demo",
+      "keyResults": []
+    },
+    {
+      "objective": "Demo21",
+      "keyResults": [
+        {
+          "id": "ac5dde2b-1225-4c30-b19d-a3bf81eb601e",
+          "isCompleted": false,
+          "description": "Demo31",
+          "progress": 37
+        }
+      ],
+      "id": "e39c"
+    }
+  ]
+}
