@@ -12,11 +12,15 @@ const Home = () => {
   const [isOkrFormModalOpen, setIsOkrFormModalOpen] = useState(false);
 
   const fetchAllOkrs = async () => {
-    const response = await fetch(`http://localhost:3000/okrs`);
+    const response = await fetch(`http://localhost:3000/objectives`, {
+      headers: {
+        Authorization: `Bearer mysecrettoken`,
+      },
+    });
     return await response.json();
-  }
+  };
   useEffect(() => {
-    fetchAllOkrs().then((data : OkrType[]) => setOkrs(data));
+    fetchAllOkrs().then((data: OkrType[]) => setOkrs(data));
   }, []);
 
   const openCreateOkrModal = () => {

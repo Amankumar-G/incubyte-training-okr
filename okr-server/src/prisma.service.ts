@@ -8,6 +8,6 @@ export class PrismaService extends PrismaClient {
     const adapter = new PrismaPg({
       connectionString: process.env.DATABASE_URL,
     });
-    super({ adapter });
+    super({ adapter, log: ['query', 'info', 'warn', 'error'] });
   }
 }
