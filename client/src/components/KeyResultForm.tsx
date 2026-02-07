@@ -1,65 +1,85 @@
-import { useContext, useState } from 'react'
-import type { KeyResult } from '../types/okr_types';
-import { KeyResultContext } from '../provider/KeyResultContext';
+import { type ChangeEvent, useState } from 'react';
+import type { keyResultFormType } from '../types/OkrFormTypes.ts';
 
-const KeyResultForm = () => {
-    const { validateKeyResultList} = useContext(KeyResultContext);
-    const [keyResult, setKeyResult] = useState<KeyResult>({
-        description: '',
-        progress: '',
-    });
+import { useKeyResult } from '../context/KeyResultContext.tsx';
 
-    function addKeyResult() {
-        if(keyResult.description != '' && keyResult.progress != '')
-        validateKeyResultList(keyResult);
-        setKeyResult({ description: '', progress: '' });
-    }
+function KeyResultForm() {
+  const [keyResult, setKeyResult] = useState<keyResultFormType>({
+    description: '',
+    progress: 0,
+  });
 
-    return (
+  const { addKeyResult } = useKeyResult();
 
-        <div className="flex space-x-4 mb-4 mt-4 space-around">
-            <div className='flex-col'>
-            <div>
-            <label htmlFor="keyResults" className="mr-3 ms-30">
-                Key Results
-            </label>
+  const handleAddKeyResult = () => {
+    addKeyResult(keyResult);
+    setKeyResult({ description: '', progress: 0 });
+  };
 
-            <div className="flex-col m-1.5 space-y-2 ms-17">
-                <input
-                    type="text"
-                    id="description"
-                    name="description"
-                    className="border border-black-300 rounded-lg  justify-between"
-                    value={keyResult.description}
-                    onChange={(e) => setKeyResult({ ...keyResult, description: e.target.value })}
+  const handleDescriptionChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setKeyResult({ ...keyResult, description: e.target.value });
+  };
 
-                />
+  const handleProgressChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = Math.max(0, Math.min(100, Number(e.target.value)));
+    setKeyResult({ ...keyResult, progress: value });
+  };
 
-                <input
-                    type="text"
-                    id="progress"
-                    name="progress"
-                    className="border border-black-300 rounded-lg"
-                    // value={}
-                    value={keyResult.progress}
-                    onChange={(e) => setKeyResult({ ...keyResult, progress: e.target.value })}
+  return (
+    <div className="flex flex-col gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+      <div className="flex flex-col gap-2">
+        <label htmlFor="description" className="text-xs font-semibold text-gray-700">
+          Description
+        </label>
+        <input
+          type="text"
+          id="description"
+          name="description"
+          className="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-xs text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+          placeholder="Key Result"
+          value={keyResult.description}
+          onChange={handleDescriptionChange}
+        />
+      </div>
 
-                />
-            </div>
-            </div>
-
-            <div>
-            <button
-                className=" bg-blue-500 text-white p-1 rounded-lg cursor-pointer hover:bg-blue-600 transition-all duration-300 active:scale-95 ease-in-out ms-25"
-                type="button"
-                onClick={() =>addKeyResult()}
-            >
-                Add key results
-            </button>
-            </div>
-            </div>
+      <div className="flex flex-col gap-2">
+        <div className="flex justify-between items-center">
+          <label htmlFor="progress" className="text-xs font-semibold text-gray-700">
+            Progress in %
+          </label>
+          <input
+            type="number"
+            id="progress-number"
+            name="progress-number"
+            min={0}
+            max={100}
+            value={keyResult.progress}
+            onChange={handleProgressChange}
+            className="border border-gray-300 rounded-lg px-3 py-1.5 text-xs text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            placeholder="Progress (0-100)%"
+          />
         </div>
-    )
+        <input
+          type="range"
+          id="progress"
+          name="progress"
+          min={0}
+          max={100}
+          value={keyResult.progress}
+          onChange={handleProgressChange}
+          className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer accent-blue-600 hover:accent-blue-700"
+        />
+      </div>
+
+      <button
+        className="w-full bg-blue-600 text-white px-3 py-1.5 text-xs rounded-lg font-semibold cursor-pointer hover:bg-blue-700 transition-all duration-300 active:scale-95 shadow-sm flex items-center justify-center gap-1"
+        type="button"
+        onClick={handleAddKeyResult}
+      >
+        <span>+</span> Add Key Result
+      </button>
+    </div>
+  );
 }
 
-export default KeyResultForm
+export default KeyResultForm;

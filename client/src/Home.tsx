@@ -12,11 +12,15 @@ const Home = () => {
   const [isOkrFormModalOpen, setIsOkrFormModalOpen] = useState(false);
 
   const fetchAllOkrs = async () => {
-    const response = await fetch(`http://localhost:3000/okrs`);
+    const response = await fetch(`http://localhost:3000/objectives`, {
+      headers: {
+        Authorization: `Bearer mysecrettoken`,
+      },
+    });
     return await response.json();
-  }
+  };
   useEffect(() => {
-    fetchAllOkrs().then((data : OkrType[]) => setOkrs(data));
+    fetchAllOkrs().then((data: OkrType[]) => setOkrs(data));
   }, []);
 
   const openCreateOkrModal = () => {
@@ -38,14 +42,14 @@ const Home = () => {
   };
 
   const deleteOkr = async (okrId: string) => {
-    await fetch(`http://localhost:3000/okrs/${okrId}`, {
+    await fetch(`http://localhost:3000/objectives/${okrId}`, {
       method: 'DELETE',
     });
     fetchAllOkrs().then((data: OkrType[]) => setOkrs(data));
   };
 
   const updateKeyResult = async (okrId: string, updatedKr: keyResult) => {
-    await fetch(`http://localhost:3000/okrs/${okrId}`, {
+    await fetch(`http://localhost:3000/objectives/${okrId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
