@@ -35,13 +35,13 @@ export default function OkrForm({
       };
 
       if (isEditing && initialOkr) {
-        await fetch(`http://localhost:3000/okrs/${initialOkr.id}`, {
+        await fetch(`http://localhost:3000/objectives/${initialOkr.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(okrData),
         });
       } else {
-        await fetch('http://localhost:3000/okrs', {
+        await fetch('http://localhost:3000/objectives', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(okrData),

@@ -1,35 +1,5 @@
 {
-  "okrs": [
-    {
-      "objective": "Increase user",
-      "keyResults": [
-        {
-          "id": "kr-2-1",
-          "isCompleted": false,
-          "description": "Improve daily active users by 20%",
-          "progress": 40
-        }
-      ],
-      "id": "okr-2"
-    },
-    {
-      "id": "okr-3",
-      "objective": "Enhance onboarding experience",
-      "keyResults": [
-        {
-          "id": "kr-3-1",
-          "isCompleted": true,
-          "description": "Complete onboarding redesign",
-          "progress": 100
-        },
-        {
-          "id": "kr-3-2",
-          "isCompleted": false,
-          "description": "Increase onboarding completion rate",
-          "progress": 70
-        }
-      ]
-    },
+  "objectives": [
     {
       "id": "okr-4",
       "objective": "Improve application performance",
@@ -38,31 +8,13 @@
           "id": "kr-4-1",
           "isCompleted": false,
           "description": "Reduce page load time below 2 seconds",
-          "progress": 65
+          "progress": 87
         },
         {
           "id": "kr-4-2",
-          "isCompleted": false,
-          "description": "Optimize API response time",
-          "progress": 50
-        }
-      ]
-    },
-    {
-      "id": "okr-5",
-      "objective": "Strengthen security posture",
-      "keyResults": [
-        {
-          "id": "kr-5-1",
           "isCompleted": true,
-          "description": "Resolve all high severity vulnerabilities",
+          "description": "Optimize API response time",
           "progress": 100
-        },
-        {
-          "id": "kr-5-2",
-          "isCompleted": false,
-          "description": "Enable 2FA for all users",
-          "progress": 80
         }
       ]
     },
@@ -72,9 +24,9 @@
       "keyResults": [
         {
           "id": "kr-6-1",
-          "isCompleted": false,
+          "isCompleted": true,
           "description": "Launch product in two new regions",
-          "progress": 45
+          "progress": 100
         },
         {
           "id": "kr-6-2",
@@ -155,59 +107,6 @@
           "progress": 65
         }
       ]
-    },
-    {
-      "id": "bd7a",
-      "objective": "Demo",
-      "keyResults": [
-        {
-          "id": "1769932569831",
-          "isCompleted": false,
-          "description": "demo",
-          "progress": 21
-        }
-      ]
-    },
-    {
-      "id": "312b",
-      "objective": "Demo",
-      "keyResults": [
-        {
-          "id": "1769932600928",
-          "isCompleted": false,
-          "description": "demo",
-          "progress": 90
-        }
-      ]
-    },
-    {
-      "id": "90af",
-      "objective": "Demo",
-      "keyResults": [
-        {
-          "id": "45cbc4f3-5fab-416f-989a-86581c78d7d3",
-          "isCompleted": false,
-          "description": "Demo",
-          "progress": 20
-        }
-      ]
-    },
-    {
-      "id": "2a10",
-      "objective": "Demo",
-      "keyResults": []
-    },
-    {
-      "objective": "Demo21",
-      "keyResults": [
-        {
-          "id": "ac5dde2b-1225-4c30-b19d-a3bf81eb601e",
-          "isCompleted": false,
-          "description": "Demo31",
-          "progress": 37
-        }
-      ],
-      "id": "e39c"
     }
   ]
 }

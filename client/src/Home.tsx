@@ -42,14 +42,14 @@ const Home = () => {
   };
 
   const deleteOkr = async (okrId: string) => {
-    await fetch(`http://localhost:3000/okrs/${okrId}`, {
+    await fetch(`http://localhost:3000/objectives/${okrId}`, {
       method: 'DELETE',
     });
     fetchAllOkrs().then((data: OkrType[]) => setOkrs(data));
   };
 
   const updateKeyResult = async (okrId: string, updatedKr: keyResult) => {
-    await fetch(`http://localhost:3000/okrs/${okrId}`, {
+    await fetch(`http://localhost:3000/objectives/${okrId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
