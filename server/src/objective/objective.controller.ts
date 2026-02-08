@@ -65,7 +65,7 @@ export class ObjectiveController {
     );
   }
 
-  @Delete('objectiveId/key-results')
+  @Delete(':objectiveId/key-results')
   async deleteAllKeyResults(
     @Param('objectiveId', new ParseUUIDPipe()) objectiveId: string,
   ) {
