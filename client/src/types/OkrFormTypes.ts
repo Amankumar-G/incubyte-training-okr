@@ -9,6 +9,6 @@ export type keyResultFormType = Omit<keyResult, 'id' | 'isCompleted'>;
 
 export type OkrType = {
   id: string;
-  objective: string;
+  title: string;
   keyResults: keyResult[];
 };
