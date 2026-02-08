@@ -4,6 +4,8 @@ import Modal from './components/Modal.tsx';
 import OkrForm from './components/OkrForm.tsx';
 import OkrList from './components/OkrList.tsx';
 import KeyResultProvider from './context/KeyResultProvider.tsx';
+import objectiveService from './api/services/objectiveService.ts';
+import keyResultService from './api/services/keyResultService.ts';
 
 const Home = () => {
   const [okrs, setOkrs] = useState<OkrType[]>([]);
@@ -12,13 +14,10 @@ const Home = () => {
   const [isOkrFormModalOpen, setIsOkrFormModalOpen] = useState(false);
 
   const fetchAllOkrs = async () => {
-    const response = await fetch(`http://localhost:3000/objectives`, {
-      headers: {
-        Authorization: `Bearer mysecrettoken`,
-      },
-    });
-    return await response.json();
+    const response = await objectiveService.getAllOkrs();
+    return response.data;
   };
+
   useEffect(() => {
     fetchAllOkrs().then((data: OkrType[]) => setOkrs(data));
   }, []);
@@ -42,26 +41,23 @@ const Home = () => {
   };
 
   const deleteOkr = async (okrId: string) => {
-    await fetch(`http://localhost:3000/objectives/${okrId}`, {
-      method: 'DELETE',
-    });
+    await objectiveService.deleteOkr(okrId);
+
     fetchAllOkrs().then((data: OkrType[]) => setOkrs(data));
   };
 
-  const updateKeyResult = async (okrId: string, updatedKr: keyResult) => {
-    await fetch(`http://localhost:3000/objectives/${okrId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        ...okrs.find((o) => o.id === okrId),
-        keyResults: okrs
-          .find((o) => o.id === okrId)
-          ?.keyResults.map((kr) => (kr.id === updatedKr.id ? updatedKr : kr)),
-      }),
-    });
+  const updateKeyResultProgress = async (keyResultId: string, toUpdatedKr: Partial<keyResult>) => {
+    await keyResultService.updateKeyResult(keyResultId, toUpdatedKr);
+    fetchAllOkrs().then((data: OkrType[]) => setOkrs(data));
+  };
 
+  const toggleComplete = async (id: string) => {
+    await keyResultService.toggleComplete(id);
+    fetchAllOkrs().then((data: OkrType[]) => setOkrs(data));
+  };
+
+  const deleteKeyResult = async (id: string) => {
+    await keyResultService.deleteKeyResult(id);
     fetchAllOkrs().then((data: OkrType[]) => setOkrs(data));
   };
 
@@ -85,13 +81,14 @@ const Home = () => {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="flex-1">
         <OkrList
           okrs={okrs}
           onEditOkr={openEditOkrModal}
           onDeleteOkr={deleteOkr}
-          onUpdateKeyResult={updateKeyResult}
+          onUpdateKeyResultProgress={updateKeyResultProgress}
+          deleteKeyResult={deleteKeyResult}
+          toggleComplete={toggleComplete}
         />
       </main>
 

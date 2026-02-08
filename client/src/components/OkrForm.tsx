@@ -3,6 +3,7 @@ import KeyResultForm from './KeyResultForm.tsx';
 import KeyResultList from './KeyResultList.tsx';
 import { useKeyResult } from '../context/KeyResultContext.tsx';
 import type { OkrType } from '../types/OkrFormTypes.ts';
+import objectiveService from '../api/services/objectiveService.ts';
 
 interface OkrFormProps {
   initialOkr: OkrType | null;
@@ -17,7 +18,7 @@ export default function OkrForm({
   onSubmitSuccess,
   onRefreshOkrs,
 }: Readonly<OkrFormProps>) {
-  const [objective, setObjective] = useState<string>(initialOkr?.objective || '');
+  const [title, setTitle] = useState<string>(initialOkr?.title || '');
   const { keyResultList, clearKeyResults, setKeyResults } = useKeyResult();
 
   useEffect(() => {
@@ -30,25 +31,20 @@ export default function OkrForm({
     e.preventDefault();
     try {
       const okrData = {
-        objective,
-        keyResults: keyResultList,
+        title,
+        keyResults: keyResultList.map((kr) => ({
+          description: kr.description,
+          progress: kr.progress,
+        })),
       };
 
       if (isEditing && initialOkr) {
-        await fetch(`http://localhost:3000/objectives/${initialOkr.id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(okrData),
-        });
+        await objectiveService.updateOkr(initialOkr.id, okrData);
       } else {
-        await fetch('http://localhost:3000/objectives', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(okrData),
-        });
+        await objectiveService.createOkr(okrData);
       }
 
-      setObjective('');
+      setTitle('');
       clearKeyResults();
       onRefreshOkrs();
       onSubmitSuccess();
@@ -75,8 +71,8 @@ export default function OkrForm({
               type="text"
               id="objectives"
               name="objectives"
-              value={objective}
-              onChange={(e) => setObjective(e.target.value)}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-xs text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all wrap-break-word"
               placeholder="Enter your objective here"
               required={true}
@@ -111,7 +107,7 @@ export default function OkrForm({
           className="px-4 py-2 text-xs text-gray-700 bg-gray-100 rounded-lg font-semibold cursor-pointer hover:bg-gray-200 transition-all duration-300 active:scale-95"
           type="reset"
           onClick={() => {
-            setObjective('');
+            setTitle('');
             clearKeyResults();
           }}
         >

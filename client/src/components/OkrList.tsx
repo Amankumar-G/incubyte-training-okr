@@ -2,20 +2,29 @@ import { useState } from 'react';
 import type { OkrType, keyResult } from '../types/OkrFormTypes.ts';
 import Modal from './Modal.tsx';
 import KeyResultProgressControl from './KeyResultProgressControl.tsx';
+import { Check, Trash2 } from 'lucide-react';
 
 interface OkrListProps {
   okrs: OkrType[];
   onEditOkr: (id: string) => void;
   onDeleteOkr: (id: string) => void;
-  onUpdateKeyResult: (okrId: string, updatedKr: keyResult) => void;
+  onUpdateKeyResultProgress: (keyResultId: string, updatedKr: Partial<keyResult>) => void;
+  toggleComplete: (id: string) => void;
+  deleteKeyResult: (id: string) => void;
 }
 
-function OkrList({ okrs, onEditOkr, onDeleteOkr, onUpdateKeyResult }: Readonly<OkrListProps>) {
+function OkrList({
+  okrs,
+  onEditOkr,
+  onDeleteOkr,
+  onUpdateKeyResultProgress,
+  toggleComplete,
+  deleteKeyResult,
+}: Readonly<OkrListProps>) {
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
 
   const [activeKeyResult, setActiveKeyResult] = useState<keyResult | null>(null);
-  const [activeOkrId, setActiveOkrId] = useState<string>('');
   const [okrIdPendingDeletion, setOkrIdPendingDeletion] = useState<string>('');
 
   if (okrs.length === 0) {
@@ -26,9 +35,8 @@ function OkrList({ okrs, onEditOkr, onDeleteOkr, onUpdateKeyResult }: Readonly<O
     );
   }
 
-  const openProgressModal = (kr: keyResult, okrId: string) => {
+  const openProgressModal = (kr: keyResult) => {
     setActiveKeyResult({ ...kr });
-    setActiveOkrId(okrId);
     setIsProgressModalOpen(true);
   };
 
@@ -40,10 +48,8 @@ function OkrList({ okrs, onEditOkr, onDeleteOkr, onUpdateKeyResult }: Readonly<O
   const saveProgress = (progress: number) => {
     if (!activeKeyResult) return;
 
-    onUpdateKeyResult(activeOkrId, {
-      ...activeKeyResult,
+    onUpdateKeyResultProgress(activeKeyResult.id, {
       progress,
-      isCompleted: progress === 100,
     });
 
     closeProgressModal();
@@ -69,7 +75,7 @@ function OkrList({ okrs, onEditOkr, onDeleteOkr, onUpdateKeyResult }: Readonly<O
                 <span className="w-7 h-7 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-semibold">
                   {index + 1}
                 </span>
-                <h2 className="text-lg font-bold text-gray-900 break-words">{okr.objective}</h2>
+                <h2 className="text-lg font-bold text-gray-900 wrap-break-word">{okr.title}</h2>
               </div>
 
               <div className="flex gap-2">
@@ -89,18 +95,71 @@ function OkrList({ okrs, onEditOkr, onDeleteOkr, onUpdateKeyResult }: Readonly<O
             </div>
 
             <div className="ml-9 space-y-2">
-              {okr.keyResults.map((kr) => (
-                <button
-                  key={kr.id}
-                  onClick={() => openProgressModal(kr, okr.id)}
-                  className="w-full text-left p-3 bg-gray-50 border border-gray-200 rounded-lg hover:border-blue-300 transition"
-                >
-                  <div className="flex justify-between items-center">
-                    <p className="text-xs font-medium text-gray-700 truncate">{kr.description}</p>
-                    <span className="text-xs font-semibold text-blue-600">{kr.progress}%</span>
-                  </div>
-                </button>
-              ))}
+              <div className="ml-9 space-y-3">
+                {okr.keyResults.map((kr) => {
+                  const isCompleted = kr.progress === 100;
+
+                  return (
+                    <div
+                      key={kr.id}
+                      className={`group flex items-center rounded-lg px-3 py-2 border
+          ${
+            isCompleted
+              ? 'bg-gray-50 border-gray-200'
+              : 'bg-white border-gray-300 hover:border-blue-400'
+          }
+        `}
+                    >
+                      {/* Complete toggle */}
+                      <button
+                        type="button"
+                        onClick={() => toggleComplete(kr.id)}
+                        aria-label="Toggle complete"
+                        className="mr-3 flex items-center justify-center w-6 h-6 rounded-full border
+            text-green-600 border-gray-300
+            hover:bg-green-50 focus:ring-2 focus:ring-green-500"
+                      >
+                        {isCompleted && <Check size={14} />}
+                      </button>
+
+                      {/* Main content */}
+                      <button
+                        type="button"
+                        onClick={() => openProgressModal(kr)}
+                        className="flex-1 flex items-center justify-between text-left focus:outline-none"
+                      >
+                        <span
+                          className={`text-sm font-medium
+              ${isCompleted ? 'text-gray-400 line-through' : 'text-gray-800'}
+            `}
+                        >
+                          {kr.description}
+                        </span>
+
+                        <span
+                          className={`ml-3 text-xs font-semibold px-2 py-1 rounded-md
+              ${isCompleted ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}
+            `}
+                        >
+                          {kr.progress}%
+                        </span>
+                      </button>
+
+                      {/* Delete */}
+                      <button
+                        type="button"
+                        onClick={() => deleteKeyResult(kr.id)}
+                        aria-label="Delete key result"
+                        className="ml-3 p-1 rounded-md text-gray-400
+            hover:text-red-600 hover:bg-red-50
+            opacity-0 group-hover:opacity-100 transition"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </section>
         ))}
