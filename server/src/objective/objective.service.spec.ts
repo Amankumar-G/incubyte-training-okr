@@ -206,4 +206,48 @@ describe('ObjectiveService', () => {
       expect(result.data.length).toBe(1);
     });
   });
+
+  const getMockObjective = (progress: number[]) => {
+    return {
+      id: 1,
+      title: 'Objective 1',
+      keyResults: progress.map((key, index) => ({
+        id: index,
+        description: '',
+        progress: key,
+        objectiveId: 1,
+      })),
+    };
+  };
+
+  describe('checkObjectiveCompleted', () => {
+    it.each([
+      {
+        progress: [100, 100],
+        msg: 'progress of every key result is 100',
+        expected: true,
+      },
+      {
+        progress: [99, 100],
+        msg: 'progress of one key result is not 100',
+        expected: false,
+      },
+      {
+        progress: [],
+        msg: 'key results list is empty',
+        expected: false,
+      },
+    ])('should return $expected when $msg', async ({ progress, expected }) => {
+      prismaMock.objective.findUnique.mockResolvedValue(
+        getMockObjective(progress),
+      );
+      const averageProgress =
+        progress.reduce((sum, key) => sum + key, 0) / progress.length || 0;
+
+      const result = await service.checkObjectiveCompleted('obj-1');
+
+      expect(result.is_completed).toBe(expected);
+      expect(result.average_progress).toBe(averageProgress);
+    });
+  });
 });

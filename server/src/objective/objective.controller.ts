@@ -29,6 +29,11 @@ export class ObjectiveController {
     return this.objectiveService.getById(objectiveId);
   }
 
+  @Get(':id/is-complete')
+  async isComplete(@Param('id', new ParseUUIDPipe()) objectiveId: string) {
+    return await this.objectiveService.checkObjectiveCompleted(objectiveId);
+  }
+
   @Post()
   async create(@Body() createObjectiveDto: CreateObjectiveDto) {
     return this.objectiveService.create(createObjectiveDto);
