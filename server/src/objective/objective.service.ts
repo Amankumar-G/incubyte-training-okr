@@ -11,6 +11,7 @@ export class ObjectiveService {
   private async getObjectiveOrThrow(objectiveId: string) {
     const objective = await this.prisma.objective.findUnique({
       where: { id: objectiveId },
+      include: { keyResults: true },
     });
 
     if (!objective) {
@@ -22,7 +23,7 @@ export class ObjectiveService {
     return objective;
   }
 
-  getAll() {
+  async getAll() {
     return this.prisma.objective.findMany({
       include: { keyResults: true },
     });
@@ -124,6 +125,23 @@ export class ObjectiveService {
     return {
       count: deleted.count,
       data: objective.keyResults,
+    };
+  }
+
+  async checkObjectiveCompleted(objectiveId: string) {
+    const objective = await this.getObjectiveOrThrow(objectiveId);
+    const progress = objective.keyResults.reduce(
+      (acc, kr) => acc + kr.progress,
+      0,
+    );
+
+    const averageProgress = objective.keyResults.length
+      ? progress / objective.keyResults.length
+      : 0;
+
+    return {
+      isCompleted: averageProgress === 100,
+      average_progress: averageProgress,
     };
   }
 }

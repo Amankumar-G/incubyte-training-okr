@@ -7,9 +7,9 @@ describe('KeyResultService', () => {
   let service: KeyResultService;
   const mockPrismaService = {
     keyResult: {
-      findUnique: jest.fn(),
-      delete: jest.fn(),
-      update: jest.fn(),
+      findUnique: vi.fn(),
+      delete: vi.fn(),
+      update: vi.fn(),
     },
   };
 
@@ -28,7 +28,7 @@ describe('KeyResultService', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('getById', () => {
@@ -36,7 +36,7 @@ describe('KeyResultService', () => {
       const mockKeyResult = {
         id: 'kr-1',
         progress: 50,
-        is_completed: false,
+        isCompleted: false,
       };
 
       mockPrismaService.keyResult.findUnique.mockResolvedValue(mockKeyResult);
@@ -86,7 +86,7 @@ describe('KeyResultService', () => {
       mockPrismaService.keyResult.update.mockResolvedValue({
         id: 'kr-1',
         progress: 100,
-        is_completed: true,
+        isCompleted: true,
       });
 
       const result = await service.updateProgress('kr-1', 100);
@@ -95,18 +95,18 @@ describe('KeyResultService', () => {
         where: { id: 'kr-1' },
         data: {
           progress: 100,
-          is_completed: true,
+          isCompleted: true,
         },
       });
 
-      expect(result.is_completed).toBe(true);
+      expect(result.isCompleted).toBe(true);
     });
 
     it('should update progress and mark incomplete when progress is less than 100', async () => {
       mockPrismaService.keyResult.update.mockResolvedValue({
         id: 'kr-1',
         progress: 10,
-        is_completed: false,
+        isCompleted: false,
       });
 
       const result = await service.updateProgress('kr-1', 10);
@@ -115,11 +115,11 @@ describe('KeyResultService', () => {
         where: { id: 'kr-1' },
         data: {
           progress: 10,
-          is_completed: false,
+          isCompleted: false,
         },
       });
 
-      expect(result.is_completed).toBe(false);
+      expect(result.isCompleted).toBe(false);
     });
 
     it('should throw NotFoundException when updating non-existing key result', async () => {
@@ -137,12 +137,12 @@ describe('KeyResultService', () => {
     it('should toggle from incomplete to complete', async () => {
       mockPrismaService.keyResult.findUnique.mockResolvedValue({
         id: 'kr-1',
-        is_completed: false,
+        isCompleted: false,
       });
 
       mockPrismaService.keyResult.update.mockResolvedValue({
         id: 'kr-1',
-        is_completed: true,
+        isCompleted: true,
         progress: 100,
       });
 
@@ -151,29 +151,29 @@ describe('KeyResultService', () => {
       expect(mockPrismaService.keyResult.update).toHaveBeenCalledWith({
         where: { id: 'kr-1' },
         data: {
-          is_completed: true,
+          isCompleted: true,
           progress: 100,
         },
       });
 
-      expect(result.is_completed).toBe(true);
+      expect(result.isCompleted).toBe(true);
     });
 
     it('should toggle from complete to incomplete', async () => {
       mockPrismaService.keyResult.findUnique.mockResolvedValue({
         id: 'kr-1',
-        is_completed: true,
+        isCompleted: true,
       });
 
       mockPrismaService.keyResult.update.mockResolvedValue({
         id: 'kr-1',
-        is_completed: false,
+        isCompleted: false,
         progress: 0,
       });
 
       const result = await service.toggleComplete('kr-1');
 
-      expect(result.is_completed).toBe(false);
+      expect(result.isCompleted).toBe(false);
       expect(result.progress).toBe(0);
     });
 

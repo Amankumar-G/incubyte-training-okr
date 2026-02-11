@@ -66,15 +66,13 @@ const Home = () => {
       <header className="bg-white border-b border-gray-200 shadow-sm">
         <div className="px-6 py-4 max-w-5xl mx-auto flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
-              Objective & Key Results (OKR) Tracker
-            </h1>
+            <h1 className="text-2xl font-bold text-gray-900">Objective & Key Results Tracker</h1>
             <p className="text-xs text-gray-600 mt-0.5">Track and achieve your objectives</p>
           </div>
 
           <button
             onClick={openCreateOkrModal}
-            className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all shadow-md"
+            className="px-4 py-2 text-sm text-black border border-solid border-blue-500  hover:bg-blue-300 rounded-lg font-semibold transition-all shadow-md hover:cursor-pointer"
           >
             + New OKR
           </button>
