@@ -36,7 +36,7 @@ export class KeyResultService {
       where: { id: keyResultId },
       data: {
         progress,
-        is_completed: progress === 100,
+        isCompleted: progress === 100,
       },
     });
   }
@@ -44,13 +44,13 @@ export class KeyResultService {
   async toggleComplete(keyResultId: string) {
     const keyResult = await this.getKeyResultOrThrow(keyResultId);
 
-    const is_completed = !keyResult.is_completed;
+    const isCompleted = !keyResult.isCompleted;
 
     return this.prisma.keyResult.update({
       where: { id: keyResultId },
       data: {
-        is_completed,
-        progress: is_completed ? 100 : 0,
+        isCompleted,
+        progress: isCompleted ? 100 : 0,
       },
     });
   }

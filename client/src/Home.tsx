@@ -66,9 +66,7 @@ const Home = () => {
       <header className="bg-white border-b border-gray-200 shadow-sm">
         <div className="px-6 py-4 max-w-5xl mx-auto flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
-              Objective & Key Results (OKR) Tracker
-            </h1>
+            <h1 className="text-2xl font-bold text-gray-900">Objective & Key Results Tracker</h1>
             <p className="text-xs text-gray-600 mt-0.5">Track and achieve your objectives</p>
           </div>
 

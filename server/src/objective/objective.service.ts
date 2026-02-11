@@ -140,7 +140,7 @@ export class ObjectiveService {
       : 0;
 
     return {
-      is_completed: averageProgress === 100,
+      isCompleted: averageProgress === 100,
       average_progress: averageProgress,
     };
   }
