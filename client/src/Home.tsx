@@ -72,7 +72,7 @@ const Home = () => {
 
           <button
             onClick={openCreateOkrModal}
-            className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all shadow-md"
+            className="px-4 py-2 text-sm text-black border border-solid border-blue-500  hover:bg-blue-300 rounded-lg font-semibold transition-all shadow-md hover:cursor-pointer"
           >
             + New OKR
           </button>
