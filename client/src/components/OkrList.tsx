@@ -97,11 +97,11 @@ function OkrList({
             <div className="ml-9 space-y-2 ">
               <div className="ml-9 space-y-3">
                 {okr.keyResults.map((kr, index) => {
-                  const isCompleted = kr.progress === 100
+                  const isCompleted = kr.progress === 100;
                   let cardBackground;
-                  if(index%2==0){
-                    cardBackground="bg-blue-300"
-                  }                 
+                  if (index % 2 == 0) {
+                    cardBackground = 'bg-blue-300';
+                  }
                   if (index % 2 !== 0) {
                     cardBackground = 'bg-red-300';
                   }
@@ -109,11 +109,7 @@ function OkrList({
                     <div
                       key={kr.id}
                       className={`group flex items-center rounded-lg px-3 py-2 border ${cardBackground}
-          ${
-            isCompleted
-              ? ' border-gray-200'
-              : ' border-gray-300 hover:border-blue-400'
-          }
+          ${isCompleted ? ' border-gray-200' : ' border-gray-300 hover:border-blue-400'}
         `}
                     >
                       {/* Complete toggle */}
