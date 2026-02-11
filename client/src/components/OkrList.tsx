@@ -94,11 +94,14 @@ function OkrList({
               </div>
             </div>
 
-            <div className="ml-9 space-y-2">
+            <div className="ml-9 space-y-2 ">
               <div className="ml-9 space-y-3">
                 {okr.keyResults.map((kr, index) => {
                   const isCompleted = kr.progress === 100;
                   let cardBackground;
+                  if (index % 2 == 0) {
+                    cardBackground = 'bg-blue-300';
+                  }
                   if (index % 2 !== 0) {
                     cardBackground = 'bg-red-300';
                   }
