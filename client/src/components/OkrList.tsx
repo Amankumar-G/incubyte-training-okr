@@ -75,7 +75,9 @@ function OkrList({
                 <span className="w-7 h-7 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-semibold">
                   {index + 1}
                 </span>
-                <h2 className="text-lg font-bold text-gray-900 wrap-break-word">{okr.title}</h2>
+                <h2 className="text-lg font-bold text-gray-900 wrap-break-word">
+                  <span className="text-[#da5757]">Objective</span> : {okr.title}
+                </h2>
               </div>
 
               <div className="flex gap-2">
@@ -94,20 +96,25 @@ function OkrList({
               </div>
             </div>
 
-            <div className="ml-9 space-y-2">
+            <div className="ml-9 space-y-2 ">
               <div className="ml-9 space-y-3">
-                {okr.keyResults.map((kr) => {
+                <h2 className="text-lg font-bold text-gray-900 wrap-break-word">
+                  <span className="text-[#217dcf]">Key Results</span>
+                </h2>
+                {okr.keyResults.map((kr, index) => {
                   const isCompleted = kr.progress === 100;
-
+                  let cardBackground;
+                  if (index % 2 == 0) {
+                    cardBackground = 'bg-blue-300';
+                  }
+                  if (index % 2 !== 0) {
+                    cardBackground = 'bg-red-300';
+                  }
                   return (
                     <div
                       key={kr.id}
-                      className={`group flex items-center rounded-lg px-3 py-2 border
-          ${
-            isCompleted
-              ? 'bg-gray-50 border-gray-200'
-              : 'bg-white border-gray-300 hover:border-blue-400'
-          }
+                      className={`group flex items-center rounded-lg px-3 py-2 border ${cardBackground}
+          ${isCompleted ? ' border-gray-200' : ' border-gray-300 hover:border-blue-400'}
         `}
                     >
                       {/* Complete toggle */}

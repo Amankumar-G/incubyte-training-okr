@@ -1,8 +1,7 @@
 import { defineConfig } from 'vitest/config';
-import tsconfigPaths from 'vite-tsconfig-paths';
+import swc from 'unplugin-swc';
 
 export default defineConfig({
-  plugins: [tsconfigPaths()],
   test: {
     globals: true,
     environment: 'node',
@@ -15,4 +14,9 @@ export default defineConfig({
     testTimeout: 30000,
     teardownTimeout: 30000,
   },
+  plugins: [
+    swc.vite({
+      module: { type: 'es6' },
+    }),
+  ],
 });
