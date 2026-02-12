@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma.service';
+import { PrismaService } from '../lib/prisma.service';
 import { CreateObjectiveDto } from './dto/create-objective.dto';
 import { ObjectiveNotFoundException } from './exceptions/objective-not-found-exception';
-import { CreateKeyResultDto } from './dto/create-key-result.dto';
 
 @Injectable()
 export class ObjectiveService {
@@ -38,7 +37,7 @@ export class ObjectiveService {
     });
   }
 
-  create(dto: CreateObjectiveDto) {
+  async create(dto: CreateObjectiveDto) {
     return this.prisma.objective.create({
       data: {
         title: dto.title,
@@ -82,50 +81,6 @@ export class ObjectiveService {
       },
       include: { keyResults: true },
     });
-  }
-
-  async getAllKeyResults(objectiveId: string) {
-    await this.getObjectiveOrThrow(objectiveId);
-
-    return this.prisma.keyResult.findMany({
-      where: { objectiveId },
-    });
-  }
-
-  async createKeyResult(objectiveId: string, dto: CreateKeyResultDto) {
-    await this.getObjectiveOrThrow(objectiveId);
-
-    return this.prisma.keyResult.create({
-      data: {
-        description: dto.description,
-        progress: dto.progress,
-        objective: {
-          connect: { id: objectiveId },
-        },
-      },
-    });
-  }
-
-  async deleteAllKeyResults(objectiveId: string) {
-    const objective = await this.prisma.objective.findUnique({
-      where: { id: objectiveId },
-      include: { keyResults: true },
-    });
-
-    if (!objective) {
-      throw new ObjectiveNotFoundException(
-        `Objective with id ${objectiveId} not found`,
-      );
-    }
-
-    const deleted = await this.prisma.keyResult.deleteMany({
-      where: { objectiveId },
-    });
-
-    return {
-      count: deleted.count,
-      data: objective.keyResults,
-    };
   }
 
   async checkObjectiveCompleted(objectiveId: string) {

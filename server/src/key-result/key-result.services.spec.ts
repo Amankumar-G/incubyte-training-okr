@@ -1,25 +1,34 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { KeyResultService } from './key-result.service';
-import { PrismaService } from '../prisma.service';
+import { PrismaService } from '../lib/prisma.service';
+import { vi } from 'vitest';
 
 describe('KeyResultService', () => {
   let service: KeyResultService;
-  const mockPrismaService = {
+  let prisma: {
     keyResult: {
-      findUnique: vi.fn(),
-      delete: vi.fn(),
-      update: vi.fn(),
-    },
+      findUnique: ReturnType<typeof vi.fn>;
+      delete: ReturnType<typeof vi.fn>;
+      update: ReturnType<typeof vi.fn>;
+    };
   };
 
   beforeEach(async () => {
+    prisma = {
+      keyResult: {
+        findUnique: vi.fn(),
+        delete: vi.fn(),
+        update: vi.fn(),
+      },
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         KeyResultService,
         {
           provide: PrismaService,
-          useValue: mockPrismaService,
+          useValue: prisma,
         },
       ],
     }).compile();
@@ -31,6 +40,10 @@ describe('KeyResultService', () => {
     vi.clearAllMocks();
   });
 
+  /* -------------------------------------------------- */
+  /* GET BY ID */
+  /* -------------------------------------------------- */
+
   describe('getById', () => {
     it('should return key result when found', async () => {
       const mockKeyResult = {
@@ -39,18 +52,18 @@ describe('KeyResultService', () => {
         isCompleted: false,
       };
 
-      mockPrismaService.keyResult.findUnique.mockResolvedValue(mockKeyResult);
+      prisma.keyResult.findUnique.mockResolvedValue(mockKeyResult);
 
       const result = await service.getById('kr-1');
 
       expect(result).toEqual(mockKeyResult);
-      expect(mockPrismaService.keyResult.findUnique).toHaveBeenCalledWith({
+      expect(prisma.keyResult.findUnique).toHaveBeenCalledWith({
         where: { id: 'kr-1' },
       });
     });
 
-    it('should throw NotFoundException if key result not found', async () => {
-      mockPrismaService.keyResult.findUnique.mockResolvedValue(null);
+    it('should throw NotFoundException when not found', async () => {
+      prisma.keyResult.findUnique.mockResolvedValue(null);
 
       await expect(service.getById('kr-404')).rejects.toThrow(
         NotFoundException,
@@ -58,32 +71,48 @@ describe('KeyResultService', () => {
     });
   });
 
+  /* -------------------------------------------------- */
+  /* DELETE */
+  /* -------------------------------------------------- */
+
   describe('deleteById', () => {
-    it('should delete key result by id', async () => {
-      mockPrismaService.keyResult.delete.mockResolvedValue({ id: 'kr-1' });
+    it('should delete key result when exists', async () => {
+      prisma.keyResult.findUnique.mockResolvedValue({ id: 'kr-1' });
+
+      prisma.keyResult.delete.mockResolvedValue({ id: 'kr-1' });
 
       const result = await service.deleteById('kr-1');
 
-      expect(result).toEqual({ id: 'kr-1' });
-      expect(mockPrismaService.keyResult.delete).toHaveBeenCalledWith({
+      expect(prisma.keyResult.delete).toHaveBeenCalledWith({
         where: { id: 'kr-1' },
       });
+
+      expect(result).toEqual({ id: 'kr-1' });
     });
 
-    it('should throw NotFoundException if key result not found', async () => {
-      mockPrismaService.keyResult.findUnique.mockResolvedValue(null);
+    it('should throw NotFoundException when not found', async () => {
+      prisma.keyResult.findUnique.mockResolvedValue(null);
 
       await expect(service.deleteById('kr-404')).rejects.toThrow(
         NotFoundException,
       );
 
-      expect(mockPrismaService.keyResult.delete).not.toHaveBeenCalled();
+      expect(prisma.keyResult.delete).not.toHaveBeenCalled();
     });
   });
 
+  /* -------------------------------------------------- */
+  /* UPDATE PROGRESS */
+  /* -------------------------------------------------- */
+
   describe('updateProgress', () => {
     it('should update progress and mark complete when progress is 100', async () => {
-      mockPrismaService.keyResult.update.mockResolvedValue({
+      prisma.keyResult.findUnique.mockResolvedValue({
+        id: 'kr-1',
+        isCompleted: false,
+      });
+
+      prisma.keyResult.update.mockResolvedValue({
         id: 'kr-1',
         progress: 100,
         isCompleted: true,
@@ -91,7 +120,7 @@ describe('KeyResultService', () => {
 
       const result = await service.updateProgress('kr-1', 100);
 
-      expect(mockPrismaService.keyResult.update).toHaveBeenCalledWith({
+      expect(prisma.keyResult.update).toHaveBeenCalledWith({
         where: { id: 'kr-1' },
         data: {
           progress: 100,
@@ -102,8 +131,13 @@ describe('KeyResultService', () => {
       expect(result.isCompleted).toBe(true);
     });
 
-    it('should update progress and mark incomplete when progress is less than 100', async () => {
-      mockPrismaService.keyResult.update.mockResolvedValue({
+    it('should update progress and mark incomplete when progress < 100', async () => {
+      prisma.keyResult.findUnique.mockResolvedValue({
+        id: 'kr-1',
+        isCompleted: true,
+      });
+
+      prisma.keyResult.update.mockResolvedValue({
         id: 'kr-1',
         progress: 10,
         isCompleted: false,
@@ -111,7 +145,7 @@ describe('KeyResultService', () => {
 
       const result = await service.updateProgress('kr-1', 10);
 
-      expect(mockPrismaService.keyResult.update).toHaveBeenCalledWith({
+      expect(prisma.keyResult.update).toHaveBeenCalledWith({
         where: { id: 'kr-1' },
         data: {
           progress: 10,
@@ -122,25 +156,29 @@ describe('KeyResultService', () => {
       expect(result.isCompleted).toBe(false);
     });
 
-    it('should throw NotFoundException when updating non-existing key result', async () => {
-      mockPrismaService.keyResult.findUnique.mockResolvedValue(null);
+    it('should throw NotFoundException when key result does not exist', async () => {
+      prisma.keyResult.findUnique.mockResolvedValue(null);
 
-      const result = await service.updateProgress('kr-404', 10);
+      await expect(service.updateProgress('kr-404', 10)).rejects.toThrow(
+        NotFoundException,
+      );
 
-      await expect(result).rejects.toThrow(NotFoundException);
-
-      expect(mockPrismaService.keyResult.update).not.toHaveBeenCalled();
+      expect(prisma.keyResult.update).not.toHaveBeenCalled();
     });
   });
 
+  /* -------------------------------------------------- */
+  /* TOGGLE COMPLETE */
+  /* -------------------------------------------------- */
+
   describe('toggleComplete', () => {
     it('should toggle from incomplete to complete', async () => {
-      mockPrismaService.keyResult.findUnique.mockResolvedValue({
+      prisma.keyResult.findUnique.mockResolvedValue({
         id: 'kr-1',
         isCompleted: false,
       });
 
-      mockPrismaService.keyResult.update.mockResolvedValue({
+      prisma.keyResult.update.mockResolvedValue({
         id: 'kr-1',
         isCompleted: true,
         progress: 100,
@@ -148,7 +186,7 @@ describe('KeyResultService', () => {
 
       const result = await service.toggleComplete('kr-1');
 
-      expect(mockPrismaService.keyResult.update).toHaveBeenCalledWith({
+      expect(prisma.keyResult.update).toHaveBeenCalledWith({
         where: { id: 'kr-1' },
         data: {
           isCompleted: true,
@@ -157,15 +195,16 @@ describe('KeyResultService', () => {
       });
 
       expect(result.isCompleted).toBe(true);
+      expect(result.progress).toBe(100);
     });
 
     it('should toggle from complete to incomplete', async () => {
-      mockPrismaService.keyResult.findUnique.mockResolvedValue({
+      prisma.keyResult.findUnique.mockResolvedValue({
         id: 'kr-1',
         isCompleted: true,
       });
 
-      mockPrismaService.keyResult.update.mockResolvedValue({
+      prisma.keyResult.update.mockResolvedValue({
         id: 'kr-1',
         isCompleted: false,
         progress: 0,
@@ -173,16 +212,26 @@ describe('KeyResultService', () => {
 
       const result = await service.toggleComplete('kr-1');
 
+      expect(prisma.keyResult.update).toHaveBeenCalledWith({
+        where: { id: 'kr-1' },
+        data: {
+          isCompleted: false,
+          progress: 0,
+        },
+      });
+
       expect(result.isCompleted).toBe(false);
       expect(result.progress).toBe(0);
     });
 
-    it('should throw NotFoundException when toggling non-existing key result', async () => {
-      mockPrismaService.keyResult.findUnique.mockResolvedValue(null);
+    it('should throw NotFoundException when not found', async () => {
+      prisma.keyResult.findUnique.mockResolvedValue(null);
 
       await expect(service.toggleComplete('kr-404')).rejects.toThrow(
         NotFoundException,
       );
+
+      expect(prisma.keyResult.update).not.toHaveBeenCalled();
     });
   });
 });
