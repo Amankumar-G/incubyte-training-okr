@@ -1,11 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../lib/prisma.service';
+import { GeminiService } from '../gemini/gemini.service';
 import { CreateObjectiveDto } from './dto/create-objective.dto';
 import { ObjectiveNotFoundException } from './exceptions/objective-not-found-exception';
 
 @Injectable()
 export class ObjectiveService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly geminiService: GeminiService,
+  ) {}
 
   private async getObjectiveOrThrow(objectiveId: string) {
     const objective = await this.prisma.objective.findUnique({
@@ -98,5 +102,10 @@ export class ObjectiveService {
       isCompleted: averageProgress === 100,
       average_progress: averageProgress,
     };
+  }
+
+  async generateObjective(query: string) {
+    console.log('Generating objective for query:', query);
+    return this.geminiService.generateText(query);
   }
 }
