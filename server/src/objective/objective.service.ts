@@ -105,7 +105,9 @@ export class ObjectiveService {
   }
 
   async generateObjective(query: string) {
-    console.log('Generating objective for query:', query);
-    return this.geminiService.generateText(query);
+    const response = await this.geminiService.generateText(query);
+    const parsedResponse = JSON.parse(response);
+    const createdObjective = await this.create(parsedResponse);
+    return createdObjective;
   }
 }
