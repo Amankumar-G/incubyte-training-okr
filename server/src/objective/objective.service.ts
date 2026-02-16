@@ -9,7 +9,7 @@ export class ObjectiveService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly geminiService: GeminiService,
-  ) {}
+  ) { }
 
   private async getObjectiveOrThrow(objectiveId: string) {
     const objective = await this.prisma.objective.findUnique({
@@ -47,11 +47,11 @@ export class ObjectiveService {
         title: dto.title,
         keyResults: dto.keyResults?.length
           ? {
-              create: dto.keyResults.map((kr) => ({
-                description: kr.description,
-                progress: kr.progress,
-              })),
-            }
+            create: dto.keyResults.map((kr) => ({
+              description: kr.description,
+              progress: kr.progress,
+            })),
+          }
           : undefined,
       },
       include: { keyResults: true },
@@ -104,10 +104,9 @@ export class ObjectiveService {
     };
   }
 
-  async generateObjective(query: string) {
+  async suggestObjective(query: string) {
     const response = await this.geminiService.generateText(query);
     const parsedResponse = JSON.parse(response);
-    const createdObjective = await this.create(parsedResponse);
-    return createdObjective;
+    return parsedResponse;
   }
 }

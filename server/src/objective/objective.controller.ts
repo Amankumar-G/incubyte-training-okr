@@ -24,7 +24,7 @@ import { ObjectiveFilter } from './objective-not-found/objective.filter';
 @ApiTags('Objectives')
 @Controller('objectives')
 export class ObjectiveController {
-  constructor(private readonly objectiveService: ObjectiveService) {}
+  constructor(private readonly objectiveService: ObjectiveService) { }
 
   @Get()
   @ApiOperation({ summary: 'List all objectives' })
@@ -84,7 +84,7 @@ export class ObjectiveController {
   }
 
   @Post('/ai')
-  async generateObjective(@Body('query') query: string) {
-    return this.objectiveService.generateObjective(query);
+  async suggestObjective(@Body('query') query: string) {
+    return this.objectiveService.suggestObjective(query);
   }
 }

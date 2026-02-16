@@ -72,7 +72,7 @@ Ensure progress is an integer between 0 and 100.
 Return valid JSON only.`;
 
     this.model = this.genAI.getGenerativeModel({
-      model: 'gemini-3-flash-preview',
+      model: 'gemini-flash-lite-latest',
       systemInstruction: systemPrompt,
     });
   }

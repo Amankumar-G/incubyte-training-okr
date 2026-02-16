@@ -22,10 +22,15 @@ export default function OkrForm({
   const { keyResultList, clearKeyResults, setKeyResults } = useKeyResult();
 
   useEffect(() => {
-    if (initialOkr?.keyResults) {
+    if (initialOkr) {
+      setTitle(initialOkr.title);
       setKeyResults(initialOkr.keyResults);
+    } else {
+      // If switching to create mode (null), reset
+      setTitle('');
+      clearKeyResults();
     }
-  }, [initialOkr, setKeyResults]);
+  }, [initialOkr, setKeyResults, clearKeyResults]);
 
   const handleOnFormSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
