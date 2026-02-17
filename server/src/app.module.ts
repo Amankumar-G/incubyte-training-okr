@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { KeyResultModule } from './key-result/key-result.module';
 import { ObjectivesKeyResultsModule } from './objectives-key-results/objectives-key-results.module';
 import { GeminiService } from './gemini/gemini.service';
+import { ChatbotModule } from './chatbot/chatbot.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { GeminiService } from './gemini/gemini.service';
     }),
     KeyResultModule,
     ObjectivesKeyResultsModule,
+    ChatbotModule,
   ],
   providers: [GeminiService],
 })
