@@ -5,185 +5,192 @@ import objectiveService from '../api/services/objectiveService';
 import type { OkrType } from '../types/OkrFormTypes';
 
 interface AiOkrGeneratorModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    onApply: (okr: Omit<OkrType, 'id'>) => void;
+  isOpen: boolean;
+  onClose: () => void;
+  onApply: (okr: Omit<OkrType, 'id'>) => void;
 }
 
 export default function AiOkrGeneratorModal({
-    isOpen,
-    onClose,
-    onApply,
+  isOpen,
+  onClose,
+  onApply,
 }: Readonly<AiOkrGeneratorModalProps>) {
-    const [prompt, setPrompt] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    const [generatedOkr, setGeneratedOkr] = useState<Omit<OkrType, 'id'> | null>(null);
-    const [error, setError] = useState('');
+  const [prompt, setPrompt] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [generatedOkr, setGeneratedOkr] = useState<Omit<OkrType, 'id'> | null>(null);
+  const [error, setError] = useState('');
 
-    const handleGenerate = async () => {
-        if (!prompt.trim()) return;
+  const handleGenerate = async () => {
+    if (!prompt.trim()) return;
 
-        setIsLoading(true);
-        setError('');
-        setGeneratedOkr(null);
+    setIsLoading(true);
+    setError('');
+    setGeneratedOkr(null);
 
-        try {
-            const response = await objectiveService.suggestOkr(prompt);
-            const data = response.data;
+    try {
+      const response = await objectiveService.suggestOkr(prompt);
+      const data = response.data;
 
-            const transformedOkr: Omit<OkrType, 'id'> = {
-                title: data.title,
-                keyResults: data.keyResults.map((kr: any) => ({
-                    ...kr,
-                    id: Math.random().toString(36).substr(2, 9),
-                    isCompleted: kr.progress === 100
-                }))
-            };
+      const transformedOkr: Omit<OkrType, 'id'> = {
+        title: data.title,
+        keyResults: data.keyResults.map((kr: any) => ({
+          ...kr,
+          id: Math.random().toString(36).substr(2, 9),
+          isCompleted: kr.progress === 100,
+        })),
+      };
 
-            setGeneratedOkr(transformedOkr);
-        } catch (err) {
-            console.error('Failed to generate OKR:', err);
-            setError('Failed to generate OKR. Please try again.');
-        } finally {
-            setIsLoading(false);
-        }
-    };
+      setGeneratedOkr(transformedOkr);
+    } catch (err) {
+      console.error('Failed to generate OKR:', err);
+      setError('Failed to generate OKR. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    const handleApply = () => {
-        if (generatedOkr) {
-            onApply(generatedOkr);
-            onClose();
-            // Reset state
-            setPrompt('');
-            setGeneratedOkr(null);
-        }
-    };
+  const handleApply = () => {
+    if (generatedOkr) {
+      onApply(generatedOkr);
+      onClose();
+      // Reset state
+      setPrompt('');
+      setGeneratedOkr(null);
+    }
+  };
 
-    return (
-        <Modal
-            isOpen={isOpen}
-            onClose={onClose}
-            title="Generate OKR with AI"
-            description="Describe your goal, and let AI structure it for you."
-            size="lg"
-        >
-            <div className="p-6 space-y-6">
-                {/* Input Section */}
-                <div className="space-y-3">
-                    <label htmlFor="prompt" className="block text-sm font-medium text-gray-700">
-                        What do you want to achieve?
-                    </label>
-                    <div className="relative">
-                        <textarea
-                            id="prompt"
-                            value={prompt}
-                            onChange={(e) => setPrompt(e.target.value)}
-                            placeholder="e.g., I want to improve our engineering team's deployment frequency and reduce bugs."
-                            className="w-full h-32 p-4 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                            disabled={isLoading}
-                        />
-                        <div className="absolute bottom-3 right-3 text-xs text-gray-400">
-                            {prompt.length}/500
-                        </div>
-                    </div>
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Generate OKR with AI"
+      description="Describe your goal, and let AI structure it for you."
+      size="lg"
+    >
+      <div className="p-6 space-y-6">
+        {/* Input Section */}
+        <div className="space-y-3">
+          <label htmlFor="prompt" className="block text-sm font-medium text-gray-700">
+            What do you want to achieve?
+          </label>
+          <div className="relative">
+            <textarea
+              id="prompt"
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              placeholder="e.g., I want to improve our engineering team's deployment frequency and reduce bugs."
+              className="w-full h-32 p-4 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              disabled={isLoading}
+            />
+            <div className="absolute bottom-3 right-3 text-xs text-gray-400">
+              {prompt.length}/500
+            </div>
+          </div>
 
-                    {!generatedOkr && (
-                        <button
-                            onClick={handleGenerate}
-                            disabled={!prompt.trim() || isLoading}
-                            className={`w-full py-3 px-4 rounded-lg flex items-center justify-center gap-2 font-semibold text-white transition-all
+          {!generatedOkr && (
+            <button
+              onClick={handleGenerate}
+              disabled={!prompt.trim() || isLoading}
+              className={`w-full py-3 px-4 rounded-lg flex items-center justify-center gap-2 font-semibold text-white transition-all
                 ${!prompt.trim() || isLoading ? 'bg-gray-300 cursor-not-allowed' : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-md'}
               `}
-                        >
-                            {isLoading ? (
-                                <>
-                                    <Loader2 className="animate-spin" size={18} />
-                                    Generating...
-                                </>
-                            ) : (
-                                <>
-                                    <Sparkles size={18} />
-                                    Generate OKR
-                                </>
-                            )}
-                        </button>
-                    )}
-                </div>
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="animate-spin" size={18} />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <Sparkles size={18} />
+                  Generate OKR
+                </>
+              )}
+            </button>
+          )}
+        </div>
 
-                {error && (
-                    <div className="p-4 bg-red-50 text-red-600 text-sm rounded-lg flex items-center gap-2">
-                        <X size={16} />
-                        {error}
-                    </div>
-                )}
+        {error && (
+          <div className="p-4 bg-red-50 text-red-600 text-sm rounded-lg flex items-center gap-2">
+            <X size={16} />
+            {error}
+          </div>
+        )}
 
-                {generatedOkr && (
-                    <div className="border border-gray-200 rounded-xl overflow-hidden bg-gray-50 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                        <div className="px-4 py-3 bg-white border-b border-gray-200 flex justify-between items-center">
-                            <h3 className="font-semibold text-gray-800 flex items-center gap-2">
-                                <Sparkles size={16} className="text-indigo-500" />
-                                AI Suggestion
-                            </h3>
-                            <button
-                                onClick={handleGenerate}
-                                className="text-xs text-gray-500 hover:text-blue-600 flex items-center gap-1"
-                                disabled={isLoading}
-                            >
-                                <RefreshCw size={12} className={isLoading ? "animate-spin" : ""} />
-                                Regenerate
-                            </button>
-                        </div>
-
-                        <div className="p-4 space-y-4">
-                            <div>
-                                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Objective</span>
-                                <p className="text-lg font-medium text-gray-900 mt-1">{generatedOkr.title}</p>
-                            </div>
-
-                            <div>
-                                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Key Results</span>
-                                <ul className="mt-2 space-y-2">
-                                    {generatedOkr.keyResults.map((kr, idx) => (
-                                        <li key={kr.id || idx} className="flex items-start gap-3 bg-white p-3 rounded-lg border border-gray-100 shadow-sm">
-                                            <div className="mt-0.5 w-5 h-5 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold flex-shrink-0">
-                                                {idx + 1}
-                                            </div>
-                                            <div className="flex-1">
-                                                <p className="text-sm text-gray-800">{kr.description}</p>
-                                                <div className="flex items-center gap-2 mt-1">
-                                                    <div className="h-1.5 flex-1 bg-gray-100 rounded-full overflow-hidden">
-                                                        <div
-                                                            className="h-full bg-blue-500 rounded-full"
-                                                            style={{ width: `${kr.progress}%` }}
-                                                        />
-                                                    </div>
-                                                    <span className="text-xs text-gray-500 font-medium">{kr.progress}%</span>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div className="p-4 bg-white border-t border-gray-200 flex gap-3 justify-end">
-                            <button
-                                onClick={() => setGeneratedOkr(null)}
-                                className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg font-medium transition-colors"
-                            >
-                                Discard
-                            </button>
-                            <button
-                                onClick={handleApply}
-                                className="px-4 py-2 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-lg font-medium shadow-sm transition-colors flex items-center gap-2"
-                            >
-                                <Check size={16} />
-                                Use This Objective
-                            </button>
-                        </div>
-                    </div>
-                )}
+        {generatedOkr && (
+          <div className="border border-gray-200 rounded-xl overflow-hidden bg-gray-50 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="px-4 py-3 bg-white border-b border-gray-200 flex justify-between items-center">
+              <h3 className="font-semibold text-gray-800 flex items-center gap-2">
+                <Sparkles size={16} className="text-indigo-500" />
+                AI Suggestion
+              </h3>
+              <button
+                onClick={handleGenerate}
+                className="text-xs text-gray-500 hover:text-blue-600 flex items-center gap-1"
+                disabled={isLoading}
+              >
+                <RefreshCw size={12} className={isLoading ? 'animate-spin' : ''} />
+                Regenerate
+              </button>
             </div>
-        </Modal>
-    );
+
+            <div className="p-4 space-y-4">
+              <div>
+                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                  Objective
+                </span>
+                <p className="text-lg font-medium text-gray-900 mt-1">{generatedOkr.title}</p>
+              </div>
+
+              <div>
+                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                  Key Results
+                </span>
+                <ul className="mt-2 space-y-2">
+                  {generatedOkr.keyResults.map((kr, idx) => (
+                    <li
+                      key={kr.id || idx}
+                      className="flex items-start gap-3 bg-white p-3 rounded-lg border border-gray-100 shadow-sm"
+                    >
+                      <div className="mt-0.5 w-5 h-5 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold flex-shrink-0">
+                        {idx + 1}
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm text-gray-800">{kr.description}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <div className="h-1.5 flex-1 bg-gray-100 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-blue-500 rounded-full"
+                              style={{ width: `${kr.progress}%` }}
+                            />
+                          </div>
+                          <span className="text-xs text-gray-500 font-medium">{kr.progress}%</span>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <div className="p-4 bg-white border-t border-gray-200 flex gap-3 justify-end">
+              <button
+                onClick={() => setGeneratedOkr(null)}
+                className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg font-medium transition-colors"
+              >
+                Discard
+              </button>
+              <button
+                onClick={handleApply}
+                className="px-4 py-2 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-lg font-medium shadow-sm transition-colors flex items-center gap-2"
+              >
+                <Check size={16} />
+                Use This Objective
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </Modal>
+  );
 }

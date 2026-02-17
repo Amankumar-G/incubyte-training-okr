@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ChatbotService } from './chatbot.service';
 
 @Controller('chatbot')
@@ -11,5 +11,11 @@ export class ChatbotController {
       return { message: 'No response from chatbot' };
     }
     return { message: response };
+  }
+
+  @Get('reset')
+  async resetChat() {
+    await this.chatbotService.resetChat();
+    return { message: 'Chat session reset successfully' };
   }
 }

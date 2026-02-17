@@ -43,6 +43,9 @@ export class ChatbotService implements OnModuleInit {
     }
 
     const result = await this.chatSession!.sendMessage({ message });
+    const history = await this.chatSession!.getHistory();
+
+
     return result.text;
   }
 
