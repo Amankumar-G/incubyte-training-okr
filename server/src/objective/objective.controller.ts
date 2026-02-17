@@ -24,7 +24,7 @@ import { ObjectiveFilter } from './objective-not-found/objective.filter';
 @ApiTags('Objectives')
 @Controller('objectives')
 export class ObjectiveController {
-  constructor(private readonly objectiveService: ObjectiveService) { }
+  constructor(private readonly objectiveService: ObjectiveService) {}
 
   @Get()
   @ApiOperation({ summary: 'List all objectives' })

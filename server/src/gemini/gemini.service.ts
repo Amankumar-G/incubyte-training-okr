@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import {GoogleGenAI} from '@google/genai';
+import { GoogleGenAI } from '@google/genai';
 
 export interface GenerateContentOptions {
   systemInstruction?: string;
@@ -15,14 +15,13 @@ export class GeminiService {
 
   constructor(private readonly configService: ConfigService) {
     const apiKey = this.configService.get<string>('GEMINI_API_KEY')!;
-    this.genAI = new GoogleGenAI({apiKey});
-  } 
+    this.genAI = new GoogleGenAI({ apiKey });
+  }
 
   async generateContent(
     prompt: string,
     options?: GenerateContentOptions,
   ): Promise<string> {
-    
     if (!prompt) {
       throw new InternalServerErrorException(
         'Prompt is required and must be a string',
@@ -32,12 +31,12 @@ export class GeminiService {
     try {
       const result = await this.genAI.models.generateContent({
         model: options?.modelName || 'gemini-flash-lite-latest',
-        contents : prompt,
-        config : {
+        contents: prompt,
+        config: {
           systemInstruction: options?.systemInstruction,
           responseMimeType: options?.responseMimeType || 'application/json',
           responseSchema: options?.responseSchema,
-        }
+        },
       });
 
       const text = result.text || '';

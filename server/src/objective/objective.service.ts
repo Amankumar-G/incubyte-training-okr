@@ -134,7 +134,6 @@ export class ObjectiveService {
   }
 
   async suggestObjective(query: string): Promise<OkrResponse> {
-
     const rawResponse = await this.geminiService.generateContent(query, {
       systemInstruction: systemPrompt,
       responseMimeType: 'application/json',
