@@ -82,4 +82,9 @@ export class ObjectiveController {
   async delete(@Param('id', new ParseUUIDPipe()) objectiveId: string) {
     return this.objectiveService.delete(objectiveId);
   }
+
+  @Post('/ai')
+  async suggestObjective(@Body('query') query: string) {
+    return this.objectiveService.suggestObjective(query);
+  }
 }

@@ -4,14 +4,17 @@ import Modal from './components/Modal.tsx';
 import OkrForm from './components/OkrForm.tsx';
 import OkrList from './components/OkrList.tsx';
 import KeyResultProvider from './context/KeyResultProvider.tsx';
+import AiOkrGeneratorModal from './components/AiOkrGeneratorModal.tsx';
 import objectiveService from './api/services/objectiveService.ts';
 import keyResultService from './api/services/keyResultService.ts';
 
 const Home = () => {
   const [okrs, setOkrs] = useState<OkrType[]>([]);
   const [activeOkrForEdit, setActiveOkrForEdit] = useState<OkrType | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   const [isOkrFormModalOpen, setIsOkrFormModalOpen] = useState(false);
+  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
 
   const fetchAllOkrs = async () => {
     const response = await objectiveService.getAllOkrs();
@@ -24,6 +27,7 @@ const Home = () => {
 
   const openCreateOkrModal = () => {
     setActiveOkrForEdit(null);
+    setIsEditing(false);
     setIsOkrFormModalOpen(true);
   };
 
@@ -31,13 +35,31 @@ const Home = () => {
     const okr = okrs.find((o) => o.id === okrId);
     if (okr) {
       setActiveOkrForEdit(okr);
+      setIsEditing(true);
       setIsOkrFormModalOpen(true);
     }
+  };
+
+  const openAiOkrModal = () => {
+    setIsAiModalOpen(true);
+  };
+
+  const handleAiOkrApply = (draftOkr: Omit<OkrType, 'id'>) => {
+    const okrWithTempId: OkrType = {
+      ...draftOkr,
+      id: 'temp-ai-draft',
+    };
+
+    setActiveOkrForEdit(okrWithTempId);
+    setIsEditing(false); // Treat as new creation
+    setIsAiModalOpen(false);
+    setIsOkrFormModalOpen(true);
   };
 
   const closeOkrFormModal = () => {
     setIsOkrFormModalOpen(false);
     setActiveOkrForEdit(null);
+    setIsEditing(false);
   };
 
   const deleteOkr = async (okrId: string) => {
@@ -70,12 +92,20 @@ const Home = () => {
             <p className="text-xs text-gray-600 mt-0.5">Track and achieve your objectives</p>
           </div>
 
-          <button
-            onClick={openCreateOkrModal}
-            className="px-4 py-2 text-sm text-black border border-solid border-blue-500  hover:bg-blue-300 rounded-lg font-semibold transition-all shadow-md hover:cursor-pointer"
-          >
-            + New OKR
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={openCreateOkrModal}
+              className="px-4 py-2 text-sm text-black border border-solid border-blue-500  hover:bg-blue-300 rounded-lg font-semibold transition-all shadow-md hover:cursor-pointer"
+            >
+              + New OKR
+            </button>
+            <button
+              onClick={openAiOkrModal}
+              className="px-4 py-2 text-sm text-black border border-solid border-blue-500  hover:bg-blue-300 rounded-lg font-semibold transition-all shadow-md hover:cursor-pointer"
+            >
+              + Generate OKR with AI
+            </button>
+          </div>
         </div>
       </header>
 
@@ -93,14 +123,14 @@ const Home = () => {
       <Modal
         isOpen={isOkrFormModalOpen}
         onClose={closeOkrFormModal}
-        title={activeOkrForEdit ? 'Edit OKR' : 'Create New OKR'}
+        title={activeOkrForEdit && isEditing ? 'Edit OKR' : 'Create New OKR'}
         description="Define your objective and key results"
         size="lg"
       >
         <KeyResultProvider>
           <OkrForm
             initialOkr={activeOkrForEdit}
-            isEditing={Boolean(activeOkrForEdit)}
+            isEditing={isEditing}
             onSubmitSuccess={closeOkrFormModal}
             onRefreshOkrs={() => {
               fetchAllOkrs().then((data: OkrType[]) => setOkrs(data));
@@ -108,6 +138,12 @@ const Home = () => {
           />
         </KeyResultProvider>
       </Modal>
+
+      <AiOkrGeneratorModal
+        isOpen={isAiModalOpen}
+        onClose={() => setIsAiModalOpen(false)}
+        onApply={handleAiOkrApply}
+      />
     </div>
   );
 };

@@ -15,6 +15,8 @@ export const objectiveService = {
     apiClient.put(`${API_CONFIG.ENDPOINTS.OBJECTIVE}/${id}`, okrData),
 
   createOkr: (okrData: OkrDtoType) => apiClient.post(API_CONFIG.ENDPOINTS.OBJECTIVE, okrData),
+
+  suggestOkr: (query: string) => apiClient.post(`${API_CONFIG.ENDPOINTS.OBJECTIVE}/ai`, { query }),
 };
 
 export default objectiveService;

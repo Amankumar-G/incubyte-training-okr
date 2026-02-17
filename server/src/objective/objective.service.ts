@@ -1,11 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from '../lib/prisma.service';
+import { GeminiService } from '../gemini/gemini.service';
 import { CreateObjectiveDto } from './dto/create-objective.dto';
 import { ObjectiveNotFoundException } from './exceptions/objective-not-found-exception';
+import { OkrResponseSchema, OkrResponse } from './schemas/okr-response.schema';
+import { systemPrompt } from '../gemini/prompt/create-objective.prompt';
+import { z } from 'zod';
 
 @Injectable()
 export class ObjectiveService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly geminiService: GeminiService,
+  ) {}
 
   private async getObjectiveOrThrow(objectiveId: string) {
     const objective = await this.prisma.objective.findUnique({
@@ -20,6 +27,32 @@ export class ObjectiveService {
     }
 
     return objective;
+  }
+
+  private parseAndValidateOkrResponse(rawResponse: string): OkrResponse {
+    try {
+      const parsedJson: unknown = JSON.parse(rawResponse);
+      return OkrResponseSchema.parse(parsedJson);
+    } catch (error) {
+      console.error('OKR response parsing/validation error:', error);
+
+      if (error instanceof z.ZodError) {
+        console.error('Validation failed:', JSON.stringify(error, null, 2));
+        throw new InternalServerErrorException(
+          'AI response format invalid for OKR structure',
+        );
+      }
+
+      if (error instanceof SyntaxError) {
+        throw new InternalServerErrorException(
+          'Failed to parse AI response as JSON',
+        );
+      }
+
+      throw new InternalServerErrorException(
+        'Failed to process AI-generated OKR',
+      );
+    }
   }
 
   async getAll() {
@@ -98,5 +131,16 @@ export class ObjectiveService {
       isCompleted: averageProgress === 100,
       average_progress: averageProgress,
     };
+  }
+
+  async suggestObjective(query: string): Promise<OkrResponse> {
+    const rawResponse = await this.geminiService.generateContent(query, {
+      systemInstruction: systemPrompt,
+      responseMimeType: 'application/json',
+      responseSchema: OkrResponseSchema.toJSONSchema(),
+      modelName: 'gemini-flash-lite-latest',
+    });
+
+    return this.parseAndValidateOkrResponse(rawResponse);
   }
 }
