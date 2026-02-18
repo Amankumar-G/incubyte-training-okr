@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import ReactMarkdown from 'react-markdown'; // Import this
+import remarkGfm from 'remark-gfm'; // Import this
 import chatbotService from '../api/services/chatbotService';
 
 interface Message {
@@ -80,35 +82,35 @@ export default function ChatbotPopup({
       aria-label="OKR Chatbot"
       className="fixed bottom-24 right-8 z-50 w-[380px] max-w-[95%] bg-gray-50 rounded-2xl shadow-2xl border border-gray-200 flex flex-col h-[500px] overflow-hidden transition-all duration-300 ease-in-out"
     >
+      {/* Header */}
       <div className="px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-between shadow-md">
-        <div className="font-bold flex items-center gap-2">
-          OKR Assistant
-        </div>
+        <div className="font-bold flex items-center gap-2">OKR Assistant</div>
         <div className="flex items-center gap-2">
           <button
             onClick={startNewChat}
-            aria-label="New chat"
-            className="text-white/80 hover:text-white text-sm"
+            className="text-white/80 hover:text-white text-xs uppercase font-semibold tracking-wide"
           >
             New Chat
           </button>
-          <button
-            onClick={handleClose}
-            aria-label="Close chatbot"
-            className="p-1 rounded hover:bg-white/10"
-          >
+          <button onClick={handleClose} className="p-1 rounded hover:bg-white/10">
             ✕
           </button>
         </div>
       </div>
 
-      <div ref={messagesContainerRef} className="p-4 flex-1 overflow-y-auto space-y-4 scroll-smooth" aria-live="polite">
+      {/* Messages Area */}
+      <div
+        ref={messagesContainerRef}
+        className="p-4 flex-1 overflow-y-auto space-y-4 scroll-smooth"
+      >
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center space-y-4 opacity-60">
             <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-2">
               <span className="text-3xl">🤖</span>
             </div>
-            <p className="text-sm text-gray-600 font-medium">How can I help with your OKRs today?</p>
+            <p className="text-sm text-gray-600 font-medium">
+              How can I help with your OKRs today?
+            </p>
           </div>
         ) : (
           messages.map((m) => (
@@ -123,7 +125,84 @@ export default function ChatbotPopup({
                     : 'bg-white border border-gray-100 text-gray-800 rounded-2xl rounded-tl-sm'
                 }`}
               >
-                {m.text}
+                {/* CONDITIONAL RENDERING: Use Markdown for Bot, Text for User */}
+                {m.from === 'bot' ? (
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      // Customizing HTML elements with Tailwind classes
+                      ul: ({ node, ...props }) => (
+                        <ul className="list-disc pl-4 space-y-1" {...props} />
+                      ),
+                      ol: ({ node, ...props }) => (
+                        <ol className="list-decimal pl-4 space-y-1" {...props} />
+                      ),
+                      li: ({ node, ...props }) => <li className="pl-1" {...props} />,
+                      h1: ({ node, ...props }) => (
+                        <h1 className="text-lg font-bold mt-2 mb-1" {...props} />
+                      ),
+                      h2: ({ node, ...props }) => (
+                        <h2 className="text-base font-bold mt-2 mb-1" {...props} />
+                      ),
+                      h3: ({ node, ...props }) => (
+                        <h3 className="text-sm font-bold mt-2 mb-1" {...props} />
+                      ),
+                      a: ({ node, ...props }) => (
+                        <a
+                          className="text-blue-600 underline hover:text-blue-800"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          {...props}
+                        />
+                      ),
+                      p: ({ node, ...props }) => (
+                        <p className="mb-2 last:mb-0 leading-relaxed" {...props} />
+                      ),
+                      strong: ({ node, ...props }) => (
+                        <strong className="font-semibold text-gray-900" {...props} />
+                      ),
+                      code: ({ node, ...props }) => (
+                        <code
+                          className="bg-gray-100 text-red-500 px-1 py-0.5 rounded text-xs font-mono border border-gray-200"
+                          {...props}
+                        />
+                      ),
+                      // Improved Table Styling
+                      table: ({ node, ...props }) => (
+                        <div className="overflow-x-auto my-2 border border-gray-200 rounded-lg">
+                          <table
+                            className="min-w-full divide-y divide-gray-200 text-xs"
+                            {...props}
+                          />
+                        </div>
+                      ),
+                      thead: ({ node, ...props }) => <thead className="bg-gray-50" {...props} />,
+                      th: ({ node, ...props }) => (
+                        <th
+                          className="px-3 py-2 text-left font-semibold text-gray-700 uppercase tracking-wider"
+                          {...props}
+                        />
+                      ),
+                      td: ({ node, ...props }) => (
+                        <td
+                          className="px-3 py-2 whitespace-nowrap text-gray-600 border-t border-gray-100"
+                          {...props}
+                        />
+                      ),
+                      blockquote: ({ node, ...props }) => (
+                        <blockquote
+                          className="border-l-4 border-blue-300 pl-3 italic text-gray-500 my-2"
+                          {...props}
+                        />
+                      ),
+                    }}
+                  >
+                    {m.text}
+                  </ReactMarkdown>
+                ) : (
+                  // User messages render as plain text to preserve whitespace formatting if needed
+                  <div className="whitespace-pre-wrap">{m.text}</div>
+                )}
               </div>
             </div>
           ))
@@ -139,6 +218,7 @@ export default function ChatbotPopup({
         )}
       </div>
 
+      {/* Input Area */}
       <div className="p-4 bg-white border-t border-gray-100">
         <div className="flex gap-2 items-center bg-gray-50 p-1.5 rounded-3xl border border-gray-200 focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-400 transition-all">
           <textarea
@@ -147,7 +227,7 @@ export default function ChatbotPopup({
             onChange={(e) => setInput(e.target.value)}
             placeholder="Type your question..."
             disabled={isLoading}
-            className="flex-1 bg-transparent border-none focus:ring-0 p-2 text-sm resize-none h-10 max-h-24 disabled:text-gray-400 placeholder-gray-400"
+            className="flex-1 bg-transparent border-none focus:ring-0 p-2 text-sm resize-none h-10 max-h-24 disabled:text-gray-400 placeholder-gray-400 outline-none"
             rows={1}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {

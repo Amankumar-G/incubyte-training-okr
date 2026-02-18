@@ -16,8 +16,7 @@ export class ParseAppendStringPipe implements PipeTransform {
     value = {
       objective: `${value.objective.toString()} Welcome to incubyte`,
     };
-    console.log(metadata);
-    console.log(value);
+
     return value;
   }
 }

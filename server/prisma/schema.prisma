@@ -27,7 +27,9 @@ model KeyResult {
 
 model Document {
   id          Int                    @id @default(autoincrement())
+  content     String
   objectiveId String                 @unique
+  metadata    Json?
   embedding   Unsupported("vector")?
   objective   Objective              @relation(fields: [objectiveId], references: [id], onDelete: Cascade)
 }

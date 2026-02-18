@@ -6,5 +6,5 @@ CREATE TABLE "Document"
 (
     id        SERIAL PRIMARY KEY,
     title     TEXT NOT NULL,
-    embedding VECTOR(768) -- use 4 for demo purposes; real-world values are much bigger
+    embedding VECTOR(3072) -- use 4 for demo purposes; real-world values are much bigger
 );

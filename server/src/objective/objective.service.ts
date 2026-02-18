@@ -6,12 +6,14 @@ import { ObjectiveNotFoundException } from './exceptions/objective-not-found-exc
 import { OkrResponseSchema, OkrResponse } from './schemas/okr-response.schema';
 import { systemPrompt } from '../gemini/prompt/create-objective.prompt';
 import { z } from 'zod';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class ObjectiveService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly geminiService: GeminiService,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   private async getObjectiveOrThrow(objectiveId: string) {
@@ -71,7 +73,7 @@ export class ObjectiveService {
   }
 
   async create(dto: CreateObjectiveDto) {
-    return this.prisma.objective.create({
+    const createdObjective = await this.prisma.objective.create({
       data: {
         title: dto.title,
         keyResults: dto.keyResults?.length
@@ -85,6 +87,9 @@ export class ObjectiveService {
       },
       include: { keyResults: true },
     });
+
+    this.eventEmitter.emit('okr.changed', createdObjective);
+    return createdObjective;
   }
 
   async delete(objectiveId: string) {
@@ -98,8 +103,7 @@ export class ObjectiveService {
 
   async update(objectiveId: string, dto: CreateObjectiveDto) {
     await this.getObjectiveOrThrow(objectiveId);
-
-    return this.prisma.objective.update({
+    const updatedObjective = await this.prisma.objective.update({
       where: { id: objectiveId },
       data: {
         title: dto.title,
@@ -114,6 +118,9 @@ export class ObjectiveService {
       },
       include: { keyResults: true },
     });
+
+    this.eventEmitter.emit('okr.changed', updatedObjective);
+    return updatedObjective;
   }
 
   async checkObjectiveCompleted(objectiveId: string) {
