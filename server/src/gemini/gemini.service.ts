@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenAI, Chat, Tool } from '@google/genai';
 import { GoogleGenerativeAIEmbeddings } from '@langchain/google-genai';
 import { PrismaVectorStore } from '@langchain/community/vectorstores/prisma';
 import { Prisma } from '../../generated/prisma/client';
@@ -12,6 +12,14 @@ export interface GenerateContentOptions {
   responseMimeType?: string;
   responseSchema?: Record<string, unknown>;
   modelName?: string;
+}
+
+export interface CreateChatOptions {
+  model: string;
+  temperature?: number;
+  systemInstruction?: string;
+  tools?: Tool[];
+  history?: any[];
 }
 
 @Injectable()
@@ -40,6 +48,18 @@ export class GeminiService {
     this.embeddings = new GoogleGenerativeAIEmbeddings({
       model: 'gemini-embedding-001',
       apiKey,
+    });
+  }
+
+  createChat(options: CreateChatOptions): Chat {
+    return this.genAI.chats.create({
+      model: options.model,
+      config: {
+        temperature: options.temperature,
+        systemInstruction: options.systemInstruction,
+        tools: options.tools,
+      },
+      history: options.history || [],
     });
   }
 

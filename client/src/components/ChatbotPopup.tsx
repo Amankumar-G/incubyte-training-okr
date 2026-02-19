@@ -2,19 +2,23 @@ import { useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown'; // Import this
 import remarkGfm from 'remark-gfm'; // Import this
 import chatbotService from '../api/services/chatbotService';
+import type { OkrType } from '../types/OkrFormTypes';
 
 interface Message {
   id: string;
   from: 'user' | 'bot';
   text: string;
+  okrData?: Omit<OkrType, 'id'>;
 }
 
 export default function ChatbotPopup({
   isOpen,
   onClose,
+  onCreateOkr,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  onCreateOkr?: (okr: Omit<OkrType, 'id'>) => void;
 }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -61,8 +65,20 @@ export default function ChatbotPopup({
           }
 
           const parsed = JSON.parse(event.data);
+
+          // Handle OKR data metadata
+          if (parsed?.type === 'okr_data' && parsed?.data) {
+            setMessages((prevMessages) =>
+              prevMessages.map((msg) =>
+                msg.id === botMsgId ? { ...msg, okrData: parsed.data } : msg
+              )
+            );
+            return;
+          }
+
+          // Handle text chunks
           const chunk = parsed?.text || '';
-          
+
           setMessages((prevMessages) =>
             prevMessages.map((msg) =>
               msg.id === botMsgId ? { ...msg, text: msg.text + chunk } : msg
@@ -171,78 +187,107 @@ export default function ChatbotPopup({
                       <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                     </div>
                   ) : (
-                    <ReactMarkdown
-                      remarkPlugins={[remarkGfm]}
-                      components={{
-                        // Customizing HTML elements with Tailwind classes
-                        ul: ({ node, ...props }) => (
-                          <ul className="list-disc pl-4 space-y-1" {...props} />
-                        ),
-                        ol: ({ node, ...props }) => (
-                          <ol className="list-decimal pl-4 space-y-1" {...props} />
-                        ),
-                        li: ({ node, ...props }) => <li className="pl-1" {...props} />,
-                        h1: ({ node, ...props }) => (
-                          <h1 className="text-lg font-bold mt-2 mb-1" {...props} />
-                        ),
-                        h2: ({ node, ...props }) => (
-                          <h2 className="text-base font-bold mt-2 mb-1" {...props} />
-                        ),
-                        h3: ({ node, ...props }) => (
-                          <h3 className="text-sm font-bold mt-2 mb-1" {...props} />
-                        ),
-                        a: ({ node, ...props }) => (
-                          <a
-                            className="text-blue-600 underline hover:text-blue-800"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            {...props}
-                          />
-                        ),
-                        p: ({ node, ...props }) => (
-                          <p className="mb-2 last:mb-0 leading-relaxed" {...props} />
-                        ),
-                        strong: ({ node, ...props }) => (
-                          <strong className="font-semibold text-gray-900" {...props} />
-                        ),
-                        code: ({ node, ...props }) => (
-                          <code
-                            className="bg-gray-100 text-red-500 px-1 py-0.5 rounded text-xs font-mono border border-gray-200"
-                            {...props}
-                          />
-                        ),
-                        // Improved Table Styling
-                        table: ({ node, ...props }) => (
-                          <div className="overflow-x-auto my-2 border border-gray-200 rounded-lg">
-                            <table
-                              className="min-w-full divide-y divide-gray-200 text-xs"
+                    <>
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          // Customizing HTML elements with Tailwind classes
+                          ul: ({ node, ...props }) => (
+                            <ul className="list-disc pl-4 space-y-1" {...props} />
+                          ),
+                          ol: ({ node, ...props }) => (
+                            <ol className="list-decimal pl-4 space-y-1" {...props} />
+                          ),
+                          li: ({ node, ...props }) => <li className="pl-1" {...props} />,
+                          h1: ({ node, ...props }) => (
+                            <h1 className="text-lg font-bold mt-2 mb-1" {...props} />
+                          ),
+                          h2: ({ node, ...props }) => (
+                            <h2 className="text-base font-bold mt-2 mb-1" {...props} />
+                          ),
+                          h3: ({ node, ...props }) => (
+                            <h3 className="text-sm font-bold mt-2 mb-1" {...props} />
+                          ),
+                          a: ({ node, ...props }) => (
+                            <a
+                              className="text-blue-600 underline hover:text-blue-800"
+                              target="_blank"
+                              rel="noopener noreferrer"
                               {...props}
                             />
-                          </div>
-                        ),
-                        thead: ({ node, ...props }) => <thead className="bg-gray-50" {...props} />,
-                        th: ({ node, ...props }) => (
-                          <th
-                            className="px-3 py-2 text-left font-semibold text-gray-700 uppercase tracking-wider"
-                            {...props}
-                          />
-                        ),
-                        td: ({ node, ...props }) => (
-                          <td
-                            className="px-3 py-2 whitespace-nowrap text-gray-600 border-t border-gray-100"
-                            {...props}
-                          />
-                        ),
-                        blockquote: ({ node, ...props }) => (
-                          <blockquote
-                            className="border-l-4 border-blue-300 pl-3 italic text-gray-500 my-2"
-                            {...props}
-                          />
-                        ),
-                      }}
-                    >
-                      {m.text}
-                    </ReactMarkdown>
+                          ),
+                          p: ({ node, ...props }) => (
+                            <p className="mb-2 last:mb-0 leading-relaxed" {...props} />
+                          ),
+                          strong: ({ node, ...props }) => (
+                            <strong className="font-semibold text-gray-900" {...props} />
+                          ),
+                          code: ({ node, ...props }) => (
+                            <code
+                              className="bg-gray-100 text-red-500 px-1 py-0.5 rounded text-xs font-mono border border-gray-200"
+                              {...props}
+                            />
+                          ),
+                          // Improved Table Styling
+                          table: ({ node, ...props }) => (
+                            <div className="overflow-x-auto my-2 border border-gray-200 rounded-lg">
+                              <table
+                                className="min-w-full divide-y divide-gray-200 text-xs"
+                                {...props}
+                              />
+                            </div>
+                          ),
+                          thead: ({ node, ...props }) => (
+                            <thead className="bg-gray-50" {...props} />
+                          ),
+                          th: ({ node, ...props }) => (
+                            <th
+                              className="px-3 py-2 text-left font-semibold text-gray-700 uppercase tracking-wider"
+                              {...props}
+                            />
+                          ),
+                          td: ({ node, ...props }) => (
+                            <td
+                              className="px-3 py-2 whitespace-nowrap text-gray-600 border-t border-gray-100"
+                              {...props}
+                            />
+                          ),
+                          blockquote: ({ node, ...props }) => (
+                            <blockquote
+                              className="border-l-4 border-blue-300 pl-3 italic text-gray-500 my-2"
+                              {...props}
+                            />
+                          ),
+                        }}
+                      >
+                        {m.text}
+                      </ReactMarkdown>
+                      {/* Show Create OKR button if OKR data is present */}
+                      {m.okrData && onCreateOkr && (
+                        <div className="mt-3 pt-3 border-t border-gray-200">
+                          <button
+                            onClick={() => onCreateOkr(m.okrData!)}
+                            className="w-full px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-2 shadow-sm"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={2}
+                              stroke="currentColor"
+                              className="w-4 h-4"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M12 4.5v15m7.5-7.5h-15"
+                              />
+                            </svg>
+                            Create this OKR
+                          </button>
+                        </div>
+                      )}
+                    </>
                   )
                 ) : (
                   // User messages render as plain text to preserve whitespace formatting if needed

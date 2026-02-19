@@ -145,7 +145,7 @@ export class ObjectiveService {
       systemInstruction: systemPrompt,
       responseMimeType: 'application/json',
       responseSchema: OkrResponseSchema.toJSONSchema(),
-      modelName: 'gemini-flash-lite-latest',
+      modelName: 'gemini-2.5-flash',
     });
 
     return this.parseAndValidateOkrResponse(rawResponse);

@@ -62,6 +62,18 @@ const Home = () => {
     setIsOkrFormModalOpen(true);
   };
 
+  const handleChatbotOkrCreate = (draftOkr: Omit<OkrType, 'id'>) => {
+    const okrWithTempId: OkrType = {
+      ...draftOkr,
+      id: 'temp-chatbot-draft',
+    };
+
+    setActiveOkrForEdit(okrWithTempId);
+    setIsEditing(false); // Treat as new creation
+    setIsChatbotOpen(false);
+    setIsOkrFormModalOpen(true);
+  };
+
   const closeOkrFormModal = () => {
     setIsOkrFormModalOpen(false);
     setActiveOkrForEdit(null);
@@ -162,7 +174,11 @@ const Home = () => {
         onApply={handleAiOkrApply}
       />
 
-      <ChatbotPopup isOpen={isChatbotOpen} onClose={() => setIsChatbotOpen(false)} />
+      <ChatbotPopup
+        isOpen={isChatbotOpen}
+        onClose={() => setIsChatbotOpen(false)}
+        onCreateOkr={handleChatbotOkrCreate}
+      />
     </div>
   );
 };
