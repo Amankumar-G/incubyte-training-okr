@@ -3,8 +3,7 @@ import {
   OnModuleInit,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { GoogleGenAI, Chat, Tool, FunctionCall, Type } from '@google/genai';
+import { Chat, Tool, FunctionCall, Type } from '@google/genai';
 import { MessageEvent } from '@nestjs/common';
 import { CHATBOT_PROMPT } from './prompt/chat.prompt';
 import { GeminiService } from 'src/gemini/gemini.service';
@@ -17,7 +16,6 @@ const CREATE_OKR_TOOL_NAME = 'create_okr' as const;
 
 @Injectable()
 export class ChatbotService implements OnModuleInit {
-  private client: GoogleGenAI;
   private chatSession: Chat | null = null;
   private readonly tools: Tool[] = [
     {
@@ -43,18 +41,9 @@ export class ChatbotService implements OnModuleInit {
   ];
 
   constructor(
-    private readonly configService: ConfigService,
     private readonly geminiService: GeminiService,
     private readonly objectiveService: ObjectiveService,
-  ) {
-    const apiKey = this.configService.get<string>('GEMINI_API_KEY');
-
-    if (!apiKey) {
-      throw new InternalServerErrorException('GEMINI_API_KEY is not defined');
-    }
-
-    this.client = new GoogleGenAI({ apiKey });
-  }
+  ) {}
 
   async onModuleInit(): Promise<void> {
     await this.startNewSession();
@@ -160,7 +149,6 @@ If the question is unrelated to the context, answer normally.
       message: contextualMessage,
     });
 
-    // Handle function calls if present
     if (result.functionCalls?.length) {
       return await this.processFunctionCallResponse(result.functionCalls[0]);
     }
@@ -182,14 +170,10 @@ If the question is unrelated to the context, answer normally.
           let functionCall: FunctionCall | null = null;
           let okrData: Record<string, unknown> | null = null;
 
-          // Fully consume the stream — never break early
           for await (const chunk of stream) {
             if (chunk.functionCalls?.length) {
-              // Capture the function call but keep iterating
               functionCall = chunk.functionCalls[0];
-              // Execute the function immediately to get OKR data
               okrData = await this.handleFunctionCall(functionCall);
-              // Don't emit text for function call chunks
               continue;
             }
 
@@ -198,35 +182,24 @@ If the question is unrelated to the context, answer normally.
             }
           }
 
-          // Now safe to send function response after stream is complete
           if (functionCall && okrData) {
             try {
-              // Send OKR data as metadata first so the button appears
+
               subscriber.next({
                 data: { type: 'okr_data', data: okrData },
               } as MessageEvent);
 
-              // Stream the AI's formatted response about the OKR
-              const functionStream = await this.chatSession!.sendMessageStream({
-                message: {
-                  functionResponse: {
-                    name: functionCall.name,
-                    response: okrData,
-                  },
-                },
-              });
 
               let hasReceivedText = false;
-              for await (const chunk of functionStream) {
-                if (chunk.text) {
-                  hasReceivedText = true;
-                  subscriber.next({
-                    data: { text: chunk.text },
-                  } as MessageEvent);
-                }
+              for await (const text of this.streamFunctionCallResponse(
+                functionCall,
+              )) {
+                hasReceivedText = true;
+                subscriber.next({
+                  data: { text },
+                } as MessageEvent);
               }
 
-              // If no text was received, send a default message
               if (!hasReceivedText) {
                 subscriber.next({
                   data: {
@@ -239,7 +212,6 @@ If the question is unrelated to the context, answer normally.
                 'Error processing function response:',
                 functionError,
               );
-              // Still send a success message even if AI response fails
               subscriber.next({
                 data: {
                   text: "✅ I've created an OKR suggestion for you! Click the button below to add it to your objectives.",
@@ -259,13 +231,11 @@ If the question is unrelated to the context, answer normally.
   }
 
   private async startNewSession(): Promise<void> {
-    this.chatSession = this.client.chats.create({
+    this.chatSession = this.geminiService.createChat({
       model: MODEL_NAME,
-      config: {
-        temperature: TEMPERATURE,
-        systemInstruction: CHATBOT_PROMPT,
-        tools: this.tools,
-      },
+      temperature: TEMPERATURE,
+      systemInstruction: CHATBOT_PROMPT,
+      tools: this.tools,
       history: [],
     });
   }
