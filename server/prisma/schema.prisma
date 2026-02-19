@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider     = "prisma-client"
   output       = "../generated/prisma"
@@ -17,8 +11,9 @@ datasource db {
 model Objective {
   id          String      @id @default(uuid())
   title       String
-  keyResults  KeyResult[]
   isCompleted Boolean     @default(false)
+  keyResults  KeyResult[]
+  documents   Document?
 }
 
 model KeyResult {
@@ -28,4 +23,13 @@ model KeyResult {
   progress    Int       @default(0)
   objectiveId String
   objective   Objective @relation(fields: [objectiveId], references: [id], onDelete: Cascade)
+}
+
+model Document {
+  id          Int                    @id @default(autoincrement())
+  content     String
+  objectiveId String                 @unique
+  metadata    Json?
+  embedding   Unsupported("vector")?
+  objective   Objective              @relation(fields: [objectiveId], references: [id], onDelete: Cascade)
 }

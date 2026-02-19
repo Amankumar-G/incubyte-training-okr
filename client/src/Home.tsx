@@ -5,6 +5,7 @@ import OkrForm from './components/OkrForm.tsx';
 import OkrList from './components/OkrList.tsx';
 import KeyResultProvider from './context/KeyResultProvider.tsx';
 import AiOkrGeneratorModal from './components/AiOkrGeneratorModal.tsx';
+import ChatbotPopup from './components/ChatbotPopup.tsx';
 import objectiveService from './api/services/objectiveService.ts';
 import keyResultService from './api/services/keyResultService.ts';
 
@@ -15,6 +16,7 @@ const Home = () => {
 
   const [isOkrFormModalOpen, setIsOkrFormModalOpen] = useState(false);
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
 
   const fetchAllOkrs = async () => {
     const response = await objectiveService.getAllOkrs();
@@ -42,6 +44,10 @@ const Home = () => {
 
   const openAiOkrModal = () => {
     setIsAiModalOpen(true);
+  };
+
+  const openChatbot = () => {
+    setIsChatbotOpen(true);
   };
 
   const handleAiOkrApply = (draftOkr: Omit<OkrType, 'id'>) => {
@@ -120,6 +126,17 @@ const Home = () => {
         />
       </main>
 
+      {/* Floating Chatbot Button */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <button
+          onClick={openChatbot}
+          aria-label="Open OKR Chatbot"
+          className="w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-xl flex items-center justify-center"
+        >
+          💬
+        </button>
+      </div>
+
       <Modal
         isOpen={isOkrFormModalOpen}
         onClose={closeOkrFormModal}
@@ -144,6 +161,8 @@ const Home = () => {
         onClose={() => setIsAiModalOpen(false)}
         onApply={handleAiOkrApply}
       />
+
+      <ChatbotPopup isOpen={isChatbotOpen} onClose={() => setIsChatbotOpen(false)} />
     </div>
   );
 };

@@ -3,6 +3,7 @@ const API_CONFIG = {
   ENDPOINTS: {
     OBJECTIVE: '/objectives',
     KEYRESULT: '/key-results',
+    CHATBOT: '/chatbot',
   },
   TIMEOUT: 30000,
   HEADERS: {
