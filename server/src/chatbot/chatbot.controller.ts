@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Sse } from '@nestjs/common';
 import { ChatbotService } from './chatbot.service';
-
+import { Observable } from 'rxjs';
+import { MessageEvent } from '@nestjs/common';
 @Controller('chatbot')
 export class ChatbotController {
   constructor(private readonly chatbotService: ChatbotService) {}
@@ -17,5 +18,10 @@ export class ChatbotController {
   async resetChat() {
     await this.chatbotService.resetChat();
     return { message: 'Chat session reset successfully' };
+  }
+
+  @Sse('stream')
+  stream(@Query('message') message: string): Observable<MessageEvent> {
+    return this.chatbotService.handleChatStream(message);
   }
 }

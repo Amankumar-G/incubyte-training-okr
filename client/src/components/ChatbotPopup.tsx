@@ -43,20 +43,56 @@ export default function ChatbotPopup({
     setInput('');
     setIsLoading(true);
 
+    const botMsgId = Date.now().toString() + '-bot';
+    const botMsg: Message = { id: botMsgId, from: 'bot', text: '' };
+    setMessages((m) => [...m, botMsg]);
+
     try {
-      const resp = await chatbotService.sendMessage(userMsg.text);
-      const botText = resp?.data?.message || 'No response from chatbot';
-      const botMsg: Message = { id: Date.now().toString() + '-bot', from: 'bot', text: botText };
-      setMessages((m) => [...m, botMsg]);
-    } catch (error) {
-      console.error('Chatbot request failed', error);
-      const errMsg: Message = {
-        id: Date.now().toString() + '-err',
-        from: 'bot',
-        text: 'Failed to reach chatbot',
+      const streamUrl = chatbotService.streamMessage(trimmedInput);
+      const eventSource = new EventSource(streamUrl);
+
+      eventSource.onmessage = (event) => {
+        try {
+          if (event.data === '[DONE]') {
+            eventSource.close();
+            setIsLoading(false);
+            textareaRef.current?.focus();
+            return;
+          }
+
+          const parsed = JSON.parse(event.data);
+          const chunk = parsed?.text || '';
+          
+          setMessages((prevMessages) =>
+            prevMessages.map((msg) =>
+              msg.id === botMsgId ? { ...msg, text: msg.text + chunk } : msg
+            )
+          );
+        } catch (parseError) {
+          console.error('Error parsing SSE data:', parseError);
+        }
       };
-      setMessages((m) => [...m, errMsg]);
-    } finally {
+
+      eventSource.onerror = (error) => {
+        console.error('SSE connection error:', error);
+        eventSource.close();
+        setMessages((prevMessages) =>
+          prevMessages.map((msg) =>
+            msg.id === botMsgId && msg.text === ''
+              ? { ...msg, text: 'Failed to reach chatbot' }
+              : msg
+          )
+        );
+        setIsLoading(false);
+        textareaRef.current?.focus();
+      };
+    } catch (error) {
+      console.error('Failed to establish stream:', error);
+      setMessages((prevMessages) =>
+        prevMessages.map((msg) =>
+          msg.id === botMsgId ? { ...msg, text: 'Failed to reach chatbot' } : msg
+        )
+      );
       setIsLoading(false);
       textareaRef.current?.focus();
     }
@@ -127,78 +163,87 @@ export default function ChatbotPopup({
               >
                 {/* CONDITIONAL RENDERING: Use Markdown for Bot, Text for User */}
                 {m.from === 'bot' ? (
-                  <ReactMarkdown
-                    remarkPlugins={[remarkGfm]}
-                    components={{
-                      // Customizing HTML elements with Tailwind classes
-                      ul: ({ node, ...props }) => (
-                        <ul className="list-disc pl-4 space-y-1" {...props} />
-                      ),
-                      ol: ({ node, ...props }) => (
-                        <ol className="list-decimal pl-4 space-y-1" {...props} />
-                      ),
-                      li: ({ node, ...props }) => <li className="pl-1" {...props} />,
-                      h1: ({ node, ...props }) => (
-                        <h1 className="text-lg font-bold mt-2 mb-1" {...props} />
-                      ),
-                      h2: ({ node, ...props }) => (
-                        <h2 className="text-base font-bold mt-2 mb-1" {...props} />
-                      ),
-                      h3: ({ node, ...props }) => (
-                        <h3 className="text-sm font-bold mt-2 mb-1" {...props} />
-                      ),
-                      a: ({ node, ...props }) => (
-                        <a
-                          className="text-blue-600 underline hover:text-blue-800"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          {...props}
-                        />
-                      ),
-                      p: ({ node, ...props }) => (
-                        <p className="mb-2 last:mb-0 leading-relaxed" {...props} />
-                      ),
-                      strong: ({ node, ...props }) => (
-                        <strong className="font-semibold text-gray-900" {...props} />
-                      ),
-                      code: ({ node, ...props }) => (
-                        <code
-                          className="bg-gray-100 text-red-500 px-1 py-0.5 rounded text-xs font-mono border border-gray-200"
-                          {...props}
-                        />
-                      ),
-                      // Improved Table Styling
-                      table: ({ node, ...props }) => (
-                        <div className="overflow-x-auto my-2 border border-gray-200 rounded-lg">
-                          <table
-                            className="min-w-full divide-y divide-gray-200 text-xs"
+                  m.text === '' && isLoading ? (
+                    // Show loading dots only when message is empty and loading
+                    <div className="flex items-center space-x-1">
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                    </div>
+                  ) : (
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      components={{
+                        // Customizing HTML elements with Tailwind classes
+                        ul: ({ node, ...props }) => (
+                          <ul className="list-disc pl-4 space-y-1" {...props} />
+                        ),
+                        ol: ({ node, ...props }) => (
+                          <ol className="list-decimal pl-4 space-y-1" {...props} />
+                        ),
+                        li: ({ node, ...props }) => <li className="pl-1" {...props} />,
+                        h1: ({ node, ...props }) => (
+                          <h1 className="text-lg font-bold mt-2 mb-1" {...props} />
+                        ),
+                        h2: ({ node, ...props }) => (
+                          <h2 className="text-base font-bold mt-2 mb-1" {...props} />
+                        ),
+                        h3: ({ node, ...props }) => (
+                          <h3 className="text-sm font-bold mt-2 mb-1" {...props} />
+                        ),
+                        a: ({ node, ...props }) => (
+                          <a
+                            className="text-blue-600 underline hover:text-blue-800"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             {...props}
                           />
-                        </div>
-                      ),
-                      thead: ({ node, ...props }) => <thead className="bg-gray-50" {...props} />,
-                      th: ({ node, ...props }) => (
-                        <th
-                          className="px-3 py-2 text-left font-semibold text-gray-700 uppercase tracking-wider"
-                          {...props}
-                        />
-                      ),
-                      td: ({ node, ...props }) => (
-                        <td
-                          className="px-3 py-2 whitespace-nowrap text-gray-600 border-t border-gray-100"
-                          {...props}
-                        />
-                      ),
-                      blockquote: ({ node, ...props }) => (
-                        <blockquote
-                          className="border-l-4 border-blue-300 pl-3 italic text-gray-500 my-2"
-                          {...props}
-                        />
-                      ),
-                    }}
-                  >
-                    {m.text}
-                  </ReactMarkdown>
+                        ),
+                        p: ({ node, ...props }) => (
+                          <p className="mb-2 last:mb-0 leading-relaxed" {...props} />
+                        ),
+                        strong: ({ node, ...props }) => (
+                          <strong className="font-semibold text-gray-900" {...props} />
+                        ),
+                        code: ({ node, ...props }) => (
+                          <code
+                            className="bg-gray-100 text-red-500 px-1 py-0.5 rounded text-xs font-mono border border-gray-200"
+                            {...props}
+                          />
+                        ),
+                        // Improved Table Styling
+                        table: ({ node, ...props }) => (
+                          <div className="overflow-x-auto my-2 border border-gray-200 rounded-lg">
+                            <table
+                              className="min-w-full divide-y divide-gray-200 text-xs"
+                              {...props}
+                            />
+                          </div>
+                        ),
+                        thead: ({ node, ...props }) => <thead className="bg-gray-50" {...props} />,
+                        th: ({ node, ...props }) => (
+                          <th
+                            className="px-3 py-2 text-left font-semibold text-gray-700 uppercase tracking-wider"
+                            {...props}
+                          />
+                        ),
+                        td: ({ node, ...props }) => (
+                          <td
+                            className="px-3 py-2 whitespace-nowrap text-gray-600 border-t border-gray-100"
+                            {...props}
+                          />
+                        ),
+                        blockquote: ({ node, ...props }) => (
+                          <blockquote
+                            className="border-l-4 border-blue-300 pl-3 italic text-gray-500 my-2"
+                            {...props}
+                          />
+                        ),
+                      }}
+                    >
+                      {m.text}
+                    </ReactMarkdown>
+                  )
                 ) : (
                   // User messages render as plain text to preserve whitespace formatting if needed
                   <div className="whitespace-pre-wrap">{m.text}</div>
@@ -206,15 +251,6 @@ export default function ChatbotPopup({
               </div>
             </div>
           ))
-        )}
-        {isLoading && (
-          <div className="flex justify-start">
-            <div className="bg-white border border-gray-100 p-3 rounded-2xl rounded-tl-sm shadow-sm flex items-center space-x-1">
-              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-            </div>
-          </div>
         )}
       </div>
 
