@@ -140,13 +140,13 @@ export default function ChatbotPopup({
         <div className="flex items-center gap-2">
           <button
             onClick={startNewChat}
-            className="text-white/90 hover:text-white text-sm font-medium px-2 py-1 hover:bg-white/10 rounded-lg transition-colors"
+            className="text-white/90 hover:text-white text-sm font-medium px-2 py-1 hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
           >
             New Chat
           </button>
           <button 
             onClick={handleClose} 
-            className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+            className="p-1.5 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -283,7 +283,7 @@ export default function ChatbotPopup({
                         <div className="mt-3 pt-3 border-t border-gray-200">
                           <button
                             onClick={() => onCreateOkr(m.okrData!)}
-                            className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-2 shadow-sm"
+                            className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-2 shadow-sm cursor-pointer"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -343,7 +343,7 @@ export default function ChatbotPopup({
             className={`p-3 rounded-lg transition-colors flex-shrink-0 ${
               isLoading || !input.trim()
                 ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                : 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm'
+                : 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm cursor-pointer'
             }`}
             aria-label="Send message"
           >

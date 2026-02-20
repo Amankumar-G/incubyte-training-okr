@@ -81,13 +81,13 @@ function OkrList({
               <div className="flex gap-2">
                 <button
                   onClick={() => onEditOkr(okr.id)}
-                  className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                  className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded-lg font-medium hover:bg-blue-700 transition-colors cursor-pointer"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => openDeleteConfirm(okr.id)}
-                  className="px-3 py-1.5 bg-red-600 text-white text-sm rounded-lg font-medium hover:bg-red-700 transition-colors"
+                  className="px-3 py-1.5 bg-red-600 text-white text-sm rounded-lg font-medium hover:bg-red-700 transition-colors cursor-pointer"
                 >
                   Delete
                 </button>
@@ -108,7 +108,7 @@ function OkrList({
                         type="button"
                         onClick={() => toggleComplete(kr.id)}
                         aria-label="Toggle complete"
-                        className="mr-3 flex items-center justify-center w-6 h-6 rounded-full border border-gray-300 text-green-600 hover:bg-green-50 focus:ring-2 focus:ring-green-500 transition-colors"
+                        className="mr-3 flex items-center justify-center w-6 h-6 rounded-full border border-gray-300 text-green-600 hover:bg-green-50 focus:ring-2 focus:ring-green-500 transition-colors cursor-pointer"
                       >
                         {isCompleted && <Check size={14} />}
                       </button>
@@ -117,7 +117,7 @@ function OkrList({
                       <button
                         type="button"
                         onClick={() => openProgressModal(kr)}
-                        className="flex-1 flex items-center justify-between text-left focus:outline-none"
+                        className="flex-1 flex items-center justify-between text-left focus:outline-none cursor-pointer"
                       >
                         <span className={`text-sm font-medium ${isCompleted ? 'text-gray-400 line-through' : 'text-gray-800'}`}>
                           {kr.description}
@@ -133,7 +133,7 @@ function OkrList({
                         type="button"
                         onClick={() => deleteKeyResult(kr.id)}
                         aria-label="Delete key result"
-                        className="ml-3 p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-all"
+                        className="ml-3 p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
                       >
                         <Trash2 size={16} />
                       </button>
@@ -171,13 +171,13 @@ function OkrList({
         <div className="flex justify-end gap-3 p-6">
           <button
             onClick={() => setIsDeleteConfirmOpen(false)}
-            className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+            className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors cursor-pointer"
           >
             Cancel
           </button>
           <button 
             onClick={confirmDelete} 
-            className="px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors"
+            className="px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors cursor-pointer"
           >
             Delete
           </button>

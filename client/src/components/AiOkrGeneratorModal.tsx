@@ -91,7 +91,7 @@ export default function AiOkrGeneratorModal({
             <button
               onClick={handleGenerate}
               disabled={!prompt.trim() || isLoading}
-              className={`w-full py-3 px-4 rounded-lg flex items-center justify-center gap-2 font-medium text-white transition-colors shadow-sm
+              className={`w-full py-3 px-4 rounded-lg flex items-center justify-center gap-2 font-medium text-white transition-colors shadow-sm cursor-pointer
                 ${!prompt.trim() || isLoading ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}
               `}
             >
@@ -126,7 +126,7 @@ export default function AiOkrGeneratorModal({
               </h3>
               <button
                 onClick={handleGenerate}
-                className="text-sm text-gray-600 hover:text-blue-600 flex items-center gap-1.5 px-3 py-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                className="text-sm text-gray-600 hover:text-blue-600 flex items-center gap-1.5 px-3 py-1.5 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
                 disabled={isLoading}
               >
                 <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
@@ -176,13 +176,13 @@ export default function AiOkrGeneratorModal({
             <div className="p-4 bg-gray-50 border-t border-gray-200 flex gap-3 justify-end">
               <button
                 onClick={() => setGeneratedOkr(null)}
-                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors cursor-pointer"
               >
                 Discard
               </button>
               <button
                 onClick={handleApply}
-                className="px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg font-medium shadow-sm transition-colors flex items-center gap-2"
+                className="px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg font-medium shadow-sm transition-colors flex items-center gap-2 cursor-pointer"
               >
                 <Check size={16} />
                 Use This Objective

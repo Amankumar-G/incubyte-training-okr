@@ -31,7 +31,7 @@ const KeyResultList = () => {
                 <p className="text-gray-900 font-medium text-sm">{kr.description}</p>
                 <button
                   type="button"
-                  className="text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg p-1.5 transition-colors"
+                  className="text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg p-1.5 transition-colors cursor-pointer"
                   onClick={() => removeKeyResult(kr.id)}
                   aria-label="Remove key result"
                 >

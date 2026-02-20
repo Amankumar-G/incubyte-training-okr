@@ -113,13 +113,13 @@ const Home = () => {
           <div className="flex gap-3">
             <button
               onClick={openCreateOkrModal}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm cursor-pointer"
             >
               + New OKR
             </button>
             <button
               onClick={openAiOkrModal}
-              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors cursor-pointer"
             >
               ✨ Generate with AI
             </button>
@@ -143,7 +143,7 @@ const Home = () => {
         <button
           onClick={openChatbot}
           aria-label="Open OKR Chatbot"
-          className="w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl flex items-center justify-center transition-all text-2xl"
+          className="w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl flex items-center justify-center transition-all text-2xl cursor-pointer"
         >
           💬
         </button>

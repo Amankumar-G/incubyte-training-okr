@@ -57,7 +57,7 @@ export default function KeyResultProgressControl({
       <div className="flex justify-end">
         <button
           onClick={() => onConfirm(progress)}
-          className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm"
+          className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm cursor-pointer"
         >
           Save Progress
         </button>

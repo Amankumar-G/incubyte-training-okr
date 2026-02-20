@@ -109,7 +109,7 @@ export default function OkrForm({
       {/* Footer buttons */}
       <div className="flex flex-row gap-3 justify-end mt-4 pt-4 border-t border-gray-200 shrink-0">
         <button
-          className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+          className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors cursor-pointer"
           type="reset"
           onClick={() => {
             setTitle('');
@@ -120,7 +120,7 @@ export default function OkrForm({
         </button>
 
         <button
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm"
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm cursor-pointer"
           type="submit"
         >
           {isEditing ? 'Update Objective' : 'Save Objective'}

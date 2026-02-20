@@ -53,7 +53,7 @@ const Modal = ({
 
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 p-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors focus:outline-none"
+              className="absolute top-4 right-4 p-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors focus:outline-none cursor-pointer"
               aria-label="Close modal"
             >
               <svg
