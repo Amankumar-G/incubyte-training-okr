@@ -45,9 +45,6 @@ describe('ObjectiveService', () => {
     vi.clearAllMocks();
   });
 
-  // ===============================
-  // Helper
-  // ===============================
   const getMockObjective = (progressValues: number[]) => ({
     id: '1',
     title: 'Objective 1',
@@ -58,9 +55,6 @@ describe('ObjectiveService', () => {
     })),
   });
 
-  // ===============================
-  // GET ALL
-  // ===============================
   describe('getAll', () => {
     it('should return all objectives with keyResults', async () => {
       const mockObjectives = [getMockObjective([100, 50])];
@@ -77,15 +71,9 @@ describe('ObjectiveService', () => {
     });
   });
 
-  // ===============================
-  // GET BY ID
-  // ===============================
   describe('getById', () => {
     it('should return objective when found', async () => {
       const mockObjective = getMockObjective([100]);
-
-      // first call: getObjectiveOrThrow
-      // second call: actual return
       prismaMock.objective.findUnique
         .mockResolvedValueOnce(mockObjective)
         .mockResolvedValueOnce(mockObjective);
@@ -127,9 +115,6 @@ describe('ObjectiveService', () => {
     });
   });
 
-  // ===============================
-  // UPDATE
-  // ===============================
   describe('update', () => {
     it('should update objective and emit event', async () => {
       const existing = getMockObjective([50]);
@@ -208,9 +193,6 @@ describe('ObjectiveService', () => {
     });
   });
 
-  // ===============================
-  // CHECK COMPLETION
-  // ===============================
   describe('checkObjectiveCompleted', () => {
     it.each([
       {
@@ -240,9 +222,9 @@ describe('ObjectiveService', () => {
     it('should throw if objective not found', async () => {
       prismaMock.objective.findUnique.mockResolvedValue(null);
 
-      await expect(
-        service.checkObjectiveCompleted('1'),
-      ).rejects.toThrow(ObjectiveNotFoundException);
+      await expect(service.checkObjectiveCompleted('1')).rejects.toThrow(
+        ObjectiveNotFoundException,
+      );
     });
   });
 });

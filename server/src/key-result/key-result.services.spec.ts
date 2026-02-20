@@ -3,6 +3,7 @@ import { NotFoundException } from '@nestjs/common';
 import { KeyResultService } from './key-result.service';
 import { PrismaService } from '../lib/prisma.service';
 import { vi } from 'vitest';
+import { describe, beforeEach, afterEach, it, expect } from 'vitest';
 
 describe('KeyResultService', () => {
   let service: KeyResultService;
@@ -40,10 +41,6 @@ describe('KeyResultService', () => {
     vi.clearAllMocks();
   });
 
-  /* -------------------------------------------------- */
-  /* GET BY ID */
-  /* -------------------------------------------------- */
-
   describe('getById', () => {
     it('should return key result when found', async () => {
       const mockKeyResult = {
@@ -71,10 +68,6 @@ describe('KeyResultService', () => {
     });
   });
 
-  /* -------------------------------------------------- */
-  /* DELETE */
-  /* -------------------------------------------------- */
-
   describe('deleteById', () => {
     it('should delete key result when exists', async () => {
       prisma.keyResult.findUnique.mockResolvedValue({ id: 'kr-1' });
@@ -100,10 +93,6 @@ describe('KeyResultService', () => {
       expect(prisma.keyResult.delete).not.toHaveBeenCalled();
     });
   });
-
-  /* -------------------------------------------------- */
-  /* UPDATE PROGRESS */
-  /* -------------------------------------------------- */
 
   describe('updateProgress', () => {
     it('should update progress and mark complete when progress is 100', async () => {
