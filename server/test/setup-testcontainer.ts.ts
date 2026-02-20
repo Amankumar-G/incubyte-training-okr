@@ -10,7 +10,7 @@ export async function setup() {
   // Increase timeout for Docker pull
   console.log('Starting PostgreSQL Testcontainer...');
 
-  postgresContainer = await new PostgreSqlContainer('postgres:15')
+  postgresContainer = await new PostgreSqlContainer('ankane/pgvector')
     .withDatabase('test_db')
     .withUsername('test')
     .withPassword('test')

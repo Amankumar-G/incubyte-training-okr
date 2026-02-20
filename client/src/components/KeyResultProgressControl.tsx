@@ -18,20 +18,20 @@ export default function KeyResultProgressControl({
   const isCompleted = progress === 100;
 
   return (
-    <div className="w-full max-w-xl mx-auto p-4">
-      <div className="flex items-center justify-between m-4">
-        <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+    <div className="w-full max-w-xl mx-auto p-6">
+      <div className="flex items-center justify-between mb-6">
+        <span className="text-sm font-medium text-gray-700 uppercase tracking-wide">
           Completion
         </span>
         <span
-          className={`px-2 py-0.5 rounded-full text-xs font-semibold
-              ${isCompleted ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}
+          className={`px-3 py-1 rounded-full text-sm font-semibold
+              ${isCompleted ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-600'}`}
         >
           {isCompleted ? 'Completed' : 'In Progress'}
         </span>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-4 mb-6">
         <input
           type="range"
           min={0}
@@ -48,17 +48,16 @@ export default function KeyResultProgressControl({
             max={100}
             value={progress}
             onChange={(e) => setProgress(Number(e.target.value))}
-            className="w-16 pl-2 pr-5 py-1 text-sm font-medium text-gray-700 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-20 px-3 py-2 text-sm font-medium text-gray-700 border border-gray-200 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          <span className="absolute right-2 top-1.5 text-xs text-gray-400">%</span>
+          <span className="absolute right-3 top-2.5 text-xs text-gray-500">%</span>
         </div>
       </div>
 
-      <div className="flex justify-end pt-6">
+      <div className="flex justify-end">
         <button
           onClick={() => onConfirm(progress)}
-          className="bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-semibold
-                     hover:bg-blue-700 active:scale-95 transition-all shadow-sm hover:shadow-md"
+          className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm"
         >
           Save Progress
         </button>

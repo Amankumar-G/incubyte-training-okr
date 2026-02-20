@@ -41,24 +41,24 @@ const Modal = ({
     >
       <div
         className={`
-          bg-white rounded-2xl shadow-2xl w-full flex flex-col overflow-hidden max-h-[90vh]
+          bg-white rounded-xl shadow-2xl w-full flex flex-col overflow-hidden max-h-[90vh]
           ${widthClass} 
           ${className ?? ''} 
         `}
       >
         {(title || description) && (
-          <div className="bg-linear-to-r from-blue-500 to-blue-600 px-8 py-5 relative shrink-0">
-            <h1 className="text-2xl font-bold text-white mb-1">{title}</h1>
-            {description && <p className="text-blue-100 text-xs">{description}</p>}
+          <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 relative shrink-0">
+            <h1 className="text-xl font-bold text-white mb-1">{title}</h1>
+            {description && <p className="text-blue-100 text-sm">{description}</p>}
 
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 p-1 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-colors focus:outline-none"
+              className="absolute top-4 right-4 p-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors focus:outline-none"
               aria-label="Close modal"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
+                className="h-5 w-5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"

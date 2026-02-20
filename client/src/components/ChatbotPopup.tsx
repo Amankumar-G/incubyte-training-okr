@@ -132,20 +132,36 @@ export default function ChatbotPopup({
     <div
       role="dialog"
       aria-label="OKR Chatbot"
-      className="fixed bottom-24 right-8 z-50 w-[380px] max-w-[95%] bg-gray-50 rounded-2xl shadow-2xl border border-gray-200 flex flex-col h-[500px] overflow-hidden transition-all duration-300 ease-in-out"
+      className="fixed bottom-24 right-8 z-50 w-[400px] max-w-[95%] bg-white rounded-xl shadow-2xl border border-gray-200 flex flex-col h-[550px] overflow-hidden"
     >
       {/* Header */}
-      <div className="px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-between shadow-md">
-        <div className="font-bold flex items-center gap-2">OKR Assistant</div>
+      <div className="px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white flex items-center justify-between">
+        <div className="font-bold text-lg">AI Assistant</div>
         <div className="flex items-center gap-2">
           <button
             onClick={startNewChat}
-            className="text-white/80 hover:text-white text-xs uppercase font-semibold tracking-wide"
+            className="text-white/90 hover:text-white text-sm font-medium px-2 py-1 hover:bg-white/10 rounded-lg transition-colors"
           >
             New Chat
           </button>
-          <button onClick={handleClose} className="p-1 rounded hover:bg-white/10">
-            ✕
+          <button 
+            onClick={handleClose} 
+            className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
           </button>
         </div>
       </div>
@@ -153,11 +169,11 @@ export default function ChatbotPopup({
       {/* Messages Area */}
       <div
         ref={messagesContainerRef}
-        className="p-4 flex-1 overflow-y-auto space-y-4 scroll-smooth"
+        className="p-4 flex-1 overflow-y-auto space-y-3 bg-gray-50"
       >
         {messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-center space-y-4 opacity-60">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-2">
+          <div className="flex flex-col items-center justify-center h-full text-center space-y-3">
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
               <span className="text-3xl">🤖</span>
             </div>
             <p className="text-sm text-gray-600 font-medium">
@@ -171,10 +187,10 @@ export default function ChatbotPopup({
               className={`flex ${m.from === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               <div
-                className={`max-w-[85%] text-sm px-4 py-3 shadow-sm ${
+                className={`max-w-[85%] text-sm px-4 py-3 rounded-lg ${
                   m.from === 'user'
-                    ? 'bg-blue-600 text-white rounded-2xl rounded-tr-sm'
-                    : 'bg-white border border-gray-100 text-gray-800 rounded-2xl rounded-tl-sm'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-white border border-gray-200 text-gray-800 shadow-sm'
                 }`}
               >
                 {/* CONDITIONAL RENDERING: Use Markdown for Bot, Text for User */}
@@ -267,7 +283,7 @@ export default function ChatbotPopup({
                         <div className="mt-3 pt-3 border-t border-gray-200">
                           <button
                             onClick={() => onCreateOkr(m.okrData!)}
-                            className="w-full px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-2 shadow-sm"
+                            className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-2 shadow-sm"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -300,15 +316,15 @@ export default function ChatbotPopup({
       </div>
 
       {/* Input Area */}
-      <div className="p-4 bg-white border-t border-gray-100">
-        <div className="flex gap-2 items-center bg-gray-50 p-1.5 rounded-3xl border border-gray-200 focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-400 transition-all">
+      <div className="p-4 bg-white border-t border-gray-200">
+        <div className="flex gap-2 items-center">
           <textarea
             ref={textareaRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Type your question..."
+            placeholder="Ask me anything about OKRs..."
             disabled={isLoading}
-            className="flex-1 bg-transparent border-none focus:ring-0 p-2 text-sm resize-none h-10 max-h-24 disabled:text-gray-400 placeholder-gray-400 outline-none"
+            className="flex-1 border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent p-3 text-sm resize-none rounded-lg max-h-24 disabled:bg-gray-50 disabled:text-gray-400 placeholder-gray-400 outline-none transition-all"
             rows={1}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
@@ -324,7 +340,7 @@ export default function ChatbotPopup({
           <button
             onClick={send}
             disabled={isLoading || !input.trim()}
-            className={`p-2 rounded-full transition-colors flex-shrink-0 ${
+            className={`p-3 rounded-lg transition-colors flex-shrink-0 ${
               isLoading || !input.trim()
                 ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
                 : 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm'

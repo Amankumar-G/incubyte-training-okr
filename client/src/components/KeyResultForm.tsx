@@ -26,17 +26,17 @@ function KeyResultForm() {
   };
 
   return (
-    <div className="flex flex-col gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+    <div className="flex flex-col gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
       <div className="flex flex-col gap-2">
-        <label htmlFor="description" className="text-xs font-semibold text-gray-700">
+        <label htmlFor="description" className="text-sm font-medium text-gray-700">
           Description
         </label>
         <input
           type="text"
           id="description"
           name="description"
-          className="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-xs text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-          placeholder="Key Result"
+          className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+          placeholder="Enter key result description"
           value={keyResult.description}
           onChange={handleDescriptionChange}
         />
@@ -44,8 +44,8 @@ function KeyResultForm() {
 
       <div className="flex flex-col gap-2">
         <div className="flex justify-between items-center">
-          <label htmlFor="progress" className="text-xs font-semibold text-gray-700">
-            Progress in %
+          <label htmlFor="progress" className="text-sm font-medium text-gray-700">
+            Progress
           </label>
           <input
             type="number"
@@ -55,8 +55,8 @@ function KeyResultForm() {
             max={100}
             value={keyResult.progress}
             onChange={handleProgressChange}
-            className="border border-gray-300 rounded-lg px-3 py-1.5 text-xs text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-            placeholder="Progress (0-100)%"
+            className="w-20 border border-gray-200 rounded-lg px-3 py-1.5 text-sm text-gray-700 text-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            placeholder="0"
           />
         </div>
         <input
@@ -67,16 +67,16 @@ function KeyResultForm() {
           max={100}
           value={keyResult.progress}
           onChange={handleProgressChange}
-          className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer accent-blue-600 hover:accent-blue-700"
+          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
         />
       </div>
 
       <button
-        className="w-full bg-blue-600 text-white px-3 py-1.5 text-xs rounded-lg font-semibold cursor-pointer hover:bg-blue-700 transition-all duration-300 active:scale-95 shadow-sm flex items-center justify-center gap-1"
+        className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm"
         type="button"
         onClick={handleAddKeyResult}
       >
-        <span>+</span> Add Key Result
+        + Add Key Result
       </button>
     </div>
   );

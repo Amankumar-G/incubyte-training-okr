@@ -102,26 +102,26 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-gray-50 to-gray-100 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col">
       <header className="bg-white border-b border-gray-200 shadow-sm">
         <div className="px-6 py-4 max-w-5xl mx-auto flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Objective & Key Results Tracker</h1>
-            <p className="text-xs text-gray-600 mt-0.5">Track and achieve your objectives</p>
+            <p className="text-sm text-gray-600 mt-1">Track and achieve your objectives</p>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <button
               onClick={openCreateOkrModal}
-              className="px-4 py-2 text-sm text-black border border-solid border-blue-500  hover:bg-blue-300 rounded-lg font-semibold transition-all shadow-md hover:cursor-pointer"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm"
             >
               + New OKR
             </button>
             <button
               onClick={openAiOkrModal}
-              className="px-4 py-2 text-sm text-black border border-solid border-blue-500  hover:bg-blue-300 rounded-lg font-semibold transition-all shadow-md hover:cursor-pointer"
+              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
             >
-              + Generate OKR with AI
+              ✨ Generate with AI
             </button>
           </div>
         </div>
@@ -143,7 +143,7 @@ const Home = () => {
         <button
           onClick={openChatbot}
           aria-label="Open OKR Chatbot"
-          className="w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-xl flex items-center justify-center"
+          className="w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl flex items-center justify-center transition-all text-2xl"
         >
           💬
         </button>

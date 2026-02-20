@@ -6,7 +6,7 @@ import {
 import { Chat, Tool, FunctionCall, Type } from '@google/genai';
 import { MessageEvent } from '@nestjs/common';
 import { CHATBOT_PROMPT } from './prompt/chat.prompt';
-import { GeminiService } from 'src/gemini/gemini.service';
+import { GeminiService } from '../gemini/gemini.service';
 import { ObjectiveService } from '../objective/objective.service';
 import { Observable } from 'rxjs';
 
