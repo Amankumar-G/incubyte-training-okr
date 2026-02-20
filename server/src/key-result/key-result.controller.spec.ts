@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { KeyResultController } from './key-result.controller';
 import { KeyResultService } from './key-result.service';
 import { PrismaService } from '../lib/prisma.service';
+import { describe, vi, beforeEach, afterEach, it, expect } from 'vitest';
 
 describe('KeyResultController', () => {
   let controller: KeyResultController;
