@@ -26,7 +26,6 @@ export default function OkrForm({
       setTitle(initialOkr.title);
       setKeyResults(initialOkr.keyResults);
     } else {
-      // If switching to create mode (null), reset
       setTitle('');
       clearKeyResults();
     }
