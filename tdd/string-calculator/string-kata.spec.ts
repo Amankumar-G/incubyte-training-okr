@@ -28,4 +28,10 @@ describe('StringCalculator', () => {
     it('should return the sum of arbitrary numbers in a string including custom saprator', () => {
         expect(add('//;\n1;2')).toBe(3);
     })
+
+    it('should return the sum of arbitary number in a string with disallow negative number', () => {
+        expect(() => add('1,-2,3')).toThrow('Negative numbers are not allowed: -2');
+    })
+
+    
 })
