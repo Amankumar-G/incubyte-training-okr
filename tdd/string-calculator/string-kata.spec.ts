@@ -11,4 +11,12 @@ describe('StringCalculator', () => {
         expect(add('10')).toBe(10);
         expect(add('15')).toBe(15);
     });
+
+    it('should return the sum of two numbers in a string', () => {
+        expect(add('1,2')).toBe(3);
+    })
+
+    it('should return the sum of arbitrary numbers in a string', () => {
+        expect(add('1,2,3')).toBe(6);
+    })
 })
