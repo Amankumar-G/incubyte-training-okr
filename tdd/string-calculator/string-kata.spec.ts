@@ -8,5 +8,7 @@ describe('StringCalculator', () => {
 
     it('should return the number for a single number string', () => {
         expect(add('5')).toBe(5);
+        expect(add('10')).toBe(10);
+        expect(add('15')).toBe(15);
     });
 })
