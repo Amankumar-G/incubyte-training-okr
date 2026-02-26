@@ -24,4 +24,8 @@ describe('StringCalculator', () => {
     it('should return the sum of arbitrary numbers in a string including new line saprator', () => {
         expect(add('1,2\n3')).toBe(6);
     })
+
+    it('should return the sum of arbitrary numbers in a string including custom saprator', () => {
+        expect(add('//;\n1;2')).toBe(3);
+    })
 })
