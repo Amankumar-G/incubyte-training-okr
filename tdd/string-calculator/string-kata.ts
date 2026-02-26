@@ -22,6 +22,9 @@ export const add = (stringInput: string): number => {
         throw new Error(`Negative numbers are not allowed: ${negativeNumbers.join(', ')}`);
     }
     return numberArray.reduce((acc, curr) => {
+        if (curr > 1000) {
+            return acc;
+        }
         return acc + curr;
     }, 0);
     

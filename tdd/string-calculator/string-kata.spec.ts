@@ -33,5 +33,8 @@ describe('StringCalculator', () => {
         expect(() => add('1,-2,3')).toThrow('Negative numbers are not allowed: -2');
     })
 
-    
+    it('should return the sum of arbitary number in a string and ignore numbers greater than 1000', () => {
+        expect(add('2,1001')).toBe(2);
+        expect(add('1,2,1001')).toBe(3);
+    })
 })
