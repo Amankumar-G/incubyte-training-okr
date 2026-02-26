@@ -7,19 +7,28 @@ export const add = (stringInput: string): number => {
     const customSeparatorMatch = stringInput.match(/^\/\/(.+)\n/);
 
     if (customSeparatorMatch) {
-        console.log('Custom separator found:', customSeparatorMatch[1]);
+
+        // const customSeparator = customSeparatorMatch[1];
+        // if (customSeparator.startsWith('[') && customSeparator.endsWith(']')) {
+        //     const separators = customSeparator.slice(1, -1).split('][');
+
+        //     separators.forEach(separator => {
+        //         stringInput = stringInput.replace(`//[${separator}]\n`, '');
+        //         stringInput = stringInput.split(separator).join(',');
+        //     });
+        // } else {
+        //     stringInput = stringInput.replace(`//${customSeparator}\n`, '');
+        //     stringInput = stringInput.split(customSeparator).join(',');
+        // }    
+        
         const customSeparator = customSeparatorMatch[1];
-        if (customSeparator.startsWith('[') && customSeparator.endsWith(']')) {
-            const separators = customSeparator.slice(1, -1).split('][');
-            console.log('Multiple custom separators found:', separators);
-            separators.forEach(separator => {
-                stringInput = stringInput.replace(`//[${separator}]\n`, '');
-                stringInput = stringInput.split(separator).join(',');
-            });
-        } else {
+        const separators = customSeparator.startsWith('[') && customSeparator.endsWith(']') 
+            ? customSeparator.slice(1, -1).split('][') 
+            : [customSeparator];
+        separators.forEach(separator => {
             stringInput = stringInput.replace(`//${customSeparator}\n`, '');
-            stringInput = stringInput.split(customSeparator).join(',');
-        }        
+            stringInput = stringInput.split(separator).join(',');
+        });
     }
 
     const stringArray = stringInput.split(/[\n,]+/);

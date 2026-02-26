@@ -41,4 +41,8 @@ describe('StringCalculator', () => {
     it('shoud return the sum of arbitary number in a string with custom separator of any length', () => {
         expect(add('//[***]\n1***2***3')).toBe(6);
     })
+
+    it('should return the sum of arbitary number in a string with multiple custom separator', () => {
+        expect(add('//[*][%]\n1*2%3')).toBe(6);
+    })
 })
