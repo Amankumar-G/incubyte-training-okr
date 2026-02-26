@@ -20,4 +20,8 @@ describe('StringCalculator', () => {
         expect(add('1,2,3')).toBe(6);
         expect(add('1,2,3,4')).toBe(10);
     })
+
+    it('should return the sum of arbitrary numbers in a string including new line saprator', () => {
+        expect(add('1,2\n3')).toBe(6);
+    })
 })
