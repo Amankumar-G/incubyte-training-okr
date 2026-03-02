@@ -1,52 +1,52 @@
-import {describe, it, expect} from 'vitest';
-import { add } from './string-kata';
+import { describe, it, expect } from "vitest";
+import { add } from "./string-kata";
 
-describe('StringCalculator', () => {
-    it('should return 0 for an empty string', () => {
-        expect(add('')).toBe(0);
-    });
+describe("StringCalculator", () => {
+  it("should return 0 for an empty string", () => {
+    expect(add("")).toBe(0);
+  });
 
-    it('should return the number for a single number string', () => {
-        expect(add('5')).toBe(5);
-        expect(add('10')).toBe(10);
-        expect(add('15')).toBe(15);
-    });
+  it("should return the number for a single number string", () => {
+    expect(add("5")).toBe(5);
+    expect(add("10")).toBe(10);
+    expect(add("15")).toBe(15);
+  });
 
-    it('should return the sum of two numbers in a string', () => {
-        expect(add('1,2')).toBe(3);
-    })
+  it("should return the sum of two numbers in a string", () => {
+    expect(add("1,2")).toBe(3);
+  });
 
-    it('should return the sum of arbitrary numbers in a string', () => {
-        expect(add('1,2,3')).toBe(6);
-        expect(add('1,2,3,4')).toBe(10);
-    })
+  it("should return the sum of arbitrary numbers in a string", () => {
+    expect(add("1,2,3")).toBe(6);
+    expect(add("1,2,3,4")).toBe(10);
+  });
 
-    it('should return the sum of arbitrary numbers in a string including new line saprator', () => {
-        expect(add('1,2\n3')).toBe(6);
-    })
+  it("should return the sum of arbitrary numbers in a string including new line saprator", () => {
+    expect(add("1,2\n3")).toBe(6);
+  });
 
-    it('should return the sum of arbitrary numbers in a string including custom saprator', () => {
-        expect(add('//;\n1;2')).toBe(3);
-    })
+  it("should return the sum of arbitrary numbers in a string including custom saprator", () => {
+    expect(add("//;\n1;2")).toBe(3);
+  });
 
-    it('should return the sum of arbitary number in a string with disallow negative number', () => {
-        expect(() => add('1,-2,3')).toThrow('Negative numbers are not allowed: -2');
-    })
+  it("should return the sum of arbitary number in a string with disallow negative number", () => {
+    expect(() => add("1,-2,3")).toThrow("Negative numbers are not allowed: -2");
+  });
 
-    it('should return the sum of arbitary number in a string and ignore numbers greater than 1000', () => {
-        expect(add('2,1001')).toBe(2);
-        expect(add('1,2,1001')).toBe(3);
-    })
+  it("should return the sum of arbitary number in a string and ignore numbers greater than 1000", () => {
+    expect(add("2,1001")).toBe(2);
+    expect(add("1,2,1001")).toBe(3);
+  });
 
-    it('shoud return the sum of arbitary number in a string with custom separator of any length', () => {
-        expect(add('//[***]\n1***2***3')).toBe(6);
-    })
+  it("shoud return the sum of arbitary number in a string with custom separator of any length", () => {
+    expect(add("//[***]\n1***2***3")).toBe(6);
+  });
 
-    it('should return the sum of arbitary number in a string with multiple custom separator', () => {
-        expect(add('//[*][%]\n1*2%3')).toBe(6);
-    })
+  it("should return the sum of arbitary number in a string with multiple custom separator", () => {
+    expect(add("//[*][%]\n1*2%3")).toBe(6);
+  });
 
-    it('should return the sum of arbitary number in a string with multiple custom separator of any length', () => {
-        expect(add('//[foo][bar]\n1foo2bar3')).toBe(6);
-    })
-})
+  it("should return the sum of arbitary number in a string with multiple custom separator of any length", () => {
+    expect(add("//[foo][bar]\n1foo2bar3")).toBe(6);
+  });
+});
