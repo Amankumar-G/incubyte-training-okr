@@ -8,5 +8,9 @@ describe("isLeapYear", () => {
 
     it("should return true for a year divisible by 4 ",()=>{
         expect(isLeapYear(1996)).toBe(true);
+        expect(isLeapYear(2024)).toBe(true);
+        expect(isLeapYear(2028)).toBe(true);
     })
+
+    
 })
